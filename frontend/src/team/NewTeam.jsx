@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./AddPeople.css";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 const initialState = {
   teamName: "",
@@ -31,6 +32,7 @@ class NewTeam extends Component {
       var config = {
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
       };
 
@@ -38,11 +40,11 @@ class NewTeam extends Component {
         teamName: this.state.teamName,
       };
 
-      const res = axios
-        .post("http://localhost:4000/teams/createteam", userData, config)
-        .then((res) => {
-          console.log(res);
-        });
+      let url = CONST.URL + "teams/createteam";
+
+      const res = axios.post(url, userData, config).then((res) => {
+        console.log(res);
+      });
 
       this.setState(initialState);
       this.handleModal();

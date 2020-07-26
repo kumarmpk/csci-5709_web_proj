@@ -91,8 +91,15 @@ class ViewTask extends Component {
     if (taskid) {
       let url = CONST.URL + "task/user/1";
 
+      var config = {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      };
+
       await axios
-        .get(url)
+        .get(url, config)
         .then((res) => {
           let obj = this.decryptFunc(res.data);
 
@@ -221,7 +228,8 @@ class ViewTask extends Component {
       backendObj.status = this.state.status;
 
       const headers = {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       };
 
       let encryp_backendObj = this.encrypFunc(backendObj);
@@ -278,7 +286,8 @@ class ViewTask extends Component {
 
   async deleteBackendAPICall() {
     const headers = {
-      "content-type": "multipart/form-data",
+      "Content-Type": "multipart/form-data",
+      "Access-Control-Allow-Origin": "*",
     };
 
     let url = CONST.URL + `task/${this.state.taskid}`;

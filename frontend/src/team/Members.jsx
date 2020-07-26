@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./AddPeople.css";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 import {
   Link,
@@ -26,6 +27,7 @@ class Members extends Component {
     var config = {
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     };
 
@@ -33,11 +35,11 @@ class Members extends Component {
       userName: this.state.userName,
     };
 
-    const res = axios
-      .post("http://localhost:4000/teams/addtoteam", userData, config)
-      .then((res) => {
-        console.log(res);
-      });
+    let url = CONST.URL + "teams/addtoteam";
+
+    const res = axios.post(url, userData, config).then((res) => {
+      console.log(res);
+    });
     this.handleModal();
   };
 
@@ -59,7 +61,16 @@ class Members extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
-    axios.get("http://localhost:4000/teams/addtoteam").then((res) => {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
+    let url = CONST.URL + "teams/addtoteam";
+
+    axios.get(url, config).then((res) => {
       console.log(res);
       this.setState({
         users: res.data,
