@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 import React, { Component } from "react";
 import "../view-project/ViewProject.css";
 import errMsg from "../errormessages";
 import "./CreateProject.css";
 import DatePicker from "react-date-picker";
 import { Dropdown, Card, Modal, Button } from "react-bootstrap";
-import TeamDummyData from './TeamDummyData';
+import TeamDummyData from "./TeamDummyData";
 
 class CreateProject extends Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class CreateProject extends Component {
     };
   }
 
-  componentDidMount() { }
+  componentDidMount() {}
 
   //this method is called to close the create page without creating the project
   //it will navigate the user back to home page
@@ -34,7 +34,7 @@ class CreateProject extends Component {
   //this method is called to create the new project
   //and on completion it will navigate the user to home page of the application
   handleCreate = (e) => {
-    const { history } = this.props
+    const { history } = this.props;
     e.preventDefault();
     console.log("selected:", this.state.selectedTeam);
 
@@ -64,21 +64,30 @@ class CreateProject extends Component {
         return;
       }
 
-      const URL = 'http://localhost:4000/project/createProject'
-      axios.post(URL, {
-        projectName: this.state.name, manager: this.state.manager,
-        startDate: this.state.startDate, endDate: this.state.endDate
-      }, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json"
-        }
-      })
-        .then(res => {
-          console.log(res.data)
-          history.push('/home')
-        }).catch(({ response }) => {
-          console.log(response)
+      const URL =
+        "https://csci5709-group11-backend.herokuapp.com/project/createProject";
+      axios
+        .post(
+          URL,
+          {
+            projectName: this.state.name,
+            manager: this.state.manager,
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
+          },
+          {
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data);
+          history.push("/home");
+        })
+        .catch(({ response }) => {
+          console.log(response);
         });
     } else {
       //form error is set here
@@ -118,15 +127,13 @@ class CreateProject extends Component {
   };
 
   getDropDownTeamNames = (data) => {
-    return (
-      <Dropdown.Item eventKey={data.id}>{data.name}</Dropdown.Item>
-    )
-  }
+    return <Dropdown.Item eventKey={data.id}>{data.name}</Dropdown.Item>;
+  };
 
   onSearchOptionSelect = (id) => {
-    const selectedTeam = TeamDummyData.find(e => e.id === Number(id))
+    const selectedTeam = TeamDummyData.find((e) => e.id === Number(id));
     this.setState({ selectedTeam });
-  }
+  };
 
   render() {
     return (
@@ -186,7 +193,11 @@ class CreateProject extends Component {
                   </section>
                   <div className="form-group">
                     <label>Description</label>
-                    <textarea className="form-control  border" aria-label="With textarea" placeholder="Enter project description" />
+                    <textarea
+                      className="form-control  border"
+                      aria-label="With textarea"
+                      placeholder="Enter project description"
+                    />
                   </div>
 
                   {this.state.validationErrorFlag && (
@@ -199,20 +210,19 @@ class CreateProject extends Component {
                       className="createProjectbutton btn btn-info col-7 m-2 text-center"
                     >
                       Create
-                  </button>
+                    </button>
                     <button
                       onClick={this.handleClose}
                       className="createProjectbutton btn btn-info col-4 m-2 text-center"
                     >
                       Close
-                  </button>
+                    </button>
                   </section>
                 </section>
               </form>
             </section>
           </section>
         </section>
-
       </article>
     );
   }
