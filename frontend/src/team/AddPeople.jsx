@@ -5,6 +5,7 @@ import axios from "axios";
 import "./AddPeople.css";
 import { Link, withRouter, Router } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 class AddPeople extends Component {
   state = {
@@ -21,11 +22,18 @@ class AddPeople extends Component {
     console.log("id team=" + tid);
     console.log("id user=" + id);
 
-    const res = axios
-      .delete("http://localhost:4000/teams/deletemember/" + tid + "/" + id)
-      .then((res) => {
-        console.log(res);
-      });
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
+    let url = CONST.URL + "teams/deletemember/" + tid + "/" + id;
+
+    const res = axios.delete(url, config).then((res) => {
+      console.log(res);
+    });
 
     this.handleModal();
   };
@@ -59,8 +67,18 @@ class AddPeople extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
     var r = this.getParam();
-    axios.get("http://localhost:4000/teams/addmember/" + r).then((res) => {
+
+    let url = CONST.URL + "teams/addmember/" + r;
+
+    axios.get(url, config).then((res) => {
       this.setState({
         users: res.data,
       });

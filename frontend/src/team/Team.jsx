@@ -4,6 +4,7 @@ import React, { Component, useState } from "react";
 import axios from "axios";
 import "./Team.css";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 class Team extends Component {
   state = {
@@ -33,8 +34,17 @@ class Team extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
     const r = this.getParam();
-    axios.get("http://localhost:4000/teams/manageteams/" + r).then((res) => {
+
+    let url = CONST.URL + "teams/manageteams/" + r;
+
+    axios.get(url, config).then((res) => {
       //console.log(res);
       this.setState({
         teams: res.data,
@@ -48,14 +58,15 @@ class Team extends Component {
     var config = {
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     };
 
-    const res = axios
-      .delete("http://localhost:4000/teams/deleteteam/" + id)
-      .then((res) => {
-        console.log(res);
-      });
+    let url = CONST.URL + "teams/deleteteam/" + id;
+
+    const res = axios.delete(url, config).then((res) => {
+      console.log(res);
+    });
 
     this.handleModal();
   };

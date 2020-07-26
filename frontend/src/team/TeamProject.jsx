@@ -12,6 +12,8 @@ import {
   useHistory,
 } from "react-router-dom";
 
+import CONST from "../constants";
+
 var value;
 
 class TeamProject extends Component {
@@ -24,23 +26,26 @@ class TeamProject extends Component {
   //method to get teams for the project
   btnClick = (e) => {
     e.preventDefault();
-    var config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
 
     var projectID = this.state.projectID;
 
     console.log("id=" + projectID);
-    const res = axios
-      .get("http://localhost:4000/teams/manageteams/" + projectID)
-      .then((res) => {
-        //console.log(res);
-        this.setState({
-          teams: res.data,
-        });
+
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
+    let url = CONST.URL + "teams/manageteams/" + projectID;
+
+    const res = axios.get(url, config).then((res) => {
+      //console.log(res);
+      this.setState({
+        teams: res.data,
       });
+    });
   };
   //method to set projectID parameter
   setVarVal = (e) => {
@@ -57,7 +62,16 @@ class TeamProject extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
-    axios.get("http://localhost:4000/teams/getteamproject").then((res) => {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
+    let url = CONST.URL + "teams/getteamproject";
+
+    axios.get(url, config).then((res) => {
       console.log(res);
       this.setState({
         projects: res.data,

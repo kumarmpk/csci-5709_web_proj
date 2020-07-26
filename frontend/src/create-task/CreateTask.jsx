@@ -51,12 +51,19 @@ class CreateTask extends Component {
   }
 
   async fetchAllDetails() {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
     this.setState({
       loading: true,
     });
     let url = CONST.URL + "task/user/1";
     await axios
-      .get(url)
+      .get(url, config)
       .then((res) => {
         let encryp_mess = res.data;
 
@@ -100,6 +107,7 @@ class CreateTask extends Component {
 
       const headers = {
         "content-type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       };
 
       let mykey = crypto.createCipher(
