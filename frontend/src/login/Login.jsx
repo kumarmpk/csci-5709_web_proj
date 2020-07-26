@@ -57,7 +57,11 @@ class Login extends Component {
     };
 
     await axios
-      .post("http://localhost:4000/login", { data: userData }, config)
+      .post(
+        "https://csci5709-group11-backend.herokuapp.com/login",
+        { data: userData },
+        config
+      )
       .then((res) => {
         if (res["status"] === 200) {
           console.log("inner userdata", userData);

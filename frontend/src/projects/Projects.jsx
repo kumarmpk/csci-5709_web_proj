@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from 'axios';
+import axios from "axios";
 import "./Projects.css";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
@@ -16,30 +16,32 @@ export class Projects extends Component {
   }
 
   componentDidMount() {
-    this.fetchProjects()
+    this.fetchProjects();
   }
 
   fetchProjects(projectName) {
-    const URL = 'http://localhost:4000/project/getProjects'
-    axios.get(URL, {
-      params: { projectName },
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => {
-        console.log(res.data)
-        this.setState({ filteredProjects: res.data })
+    const URL =
+      "https://csci5709-group11-backend.herokuapp.com/project/getProjects";
+    axios
+      .get(URL, {
+        params: { projectName },
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        this.setState({ filteredProjects: res.data });
       })
       .catch(({ response }) => {
-        console.log(response)
+        console.log(response);
       });
   }
 
   onTextChanged = (e) => {
     const value = e.target.value.trim().toLowerCase();
-    this.fetchProjects(value)
+    this.fetchProjects(value);
   };
 
   searchForProjects = (value) => {
@@ -47,10 +49,10 @@ export class Projects extends Component {
     let abs =
       ProjectDummyData.length > 0
         ? ProjectDummyData.map((obj, key) => {
-          if (obj.projectName.toLowerCase().includes(value)) {
-            temp.push(obj);
-          }
-        })
+            if (obj.projectName.toLowerCase().includes(value)) {
+              temp.push(obj);
+            }
+          })
         : null;
     this.setState(() => ({ filteredProjects: temp }));
   };
@@ -71,7 +73,7 @@ export class Projects extends Component {
               return (
                 <tr>
                   <th>{data.projectName}</th>
-                  <td>{data.manager || '-'}</td>
+                  <td>{data.manager || "-"}</td>
                   <td>{new Date(data.endDate).toDateString()}</td>
                 </tr>
               );
@@ -80,19 +82,19 @@ export class Projects extends Component {
         </table>
       </div>
     ) : (
-        <div className="col-12 col-sm-12">
-          <table className="table table-striped">
-            <thead className="thead-dark">
-              <tr>
-                <th>Project Name</th>
-                <th>Team Name</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-          </table>
-          <h3>No projects matching with your search found</h3>
-        </div>
-      );
+      <div className="col-12 col-sm-12">
+        <table className="table table-striped">
+          <thead className="thead-dark">
+            <tr>
+              <th>Project Name</th>
+              <th>Team Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+        </table>
+        <h3>No projects matching with your search found</h3>
+      </div>
+    );
   };
   onSearchOptionSelect = (e) => {
     this.setState(() => ({ searchOption: e }));

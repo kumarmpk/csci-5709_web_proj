@@ -75,7 +75,11 @@ class ResetPassword extends Component {
     };
 
     await axios
-      .post("http://localhost:4000/resetpassword", { data: userData }, config)
+      .post(
+        "https://csci5709-group11-backend.herokuapp.com/resetpassword",
+        { data: userData },
+        config
+      )
       .then((res) => {
         if (res["status"] === 200) {
           this.props.history.push("/login");
