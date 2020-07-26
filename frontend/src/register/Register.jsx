@@ -93,7 +93,7 @@ class Register extends Component {
     console.log(userData);
 
     const res = await axios.post(
-      "http://localhost:4000/register",
+      "https://csci5709-group11-backend.herokuapp.com/register",
       { data: userData },
       config
     );

@@ -102,6 +102,8 @@ class ContactUs extends Component {
       mess = JSON.parse(mess);
       mess = mess.data;
 
+      console.log("mess", mess);
+
       if (mess === "18" || mess === 18) {
         this.setState({
           modalFlag: true,
