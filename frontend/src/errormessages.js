@@ -39,4 +39,6 @@ module.exports = {
   "30": "Task update success",
   "31": "No attachment",
   "32": "Comments added",
+  "33": "Error occured while updating password",
+  "34": "Password updated successfully"
 };

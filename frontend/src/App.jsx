@@ -6,7 +6,7 @@ import Register from "./register/Register";
 
 import Home from "./common-components/Home";
 import { ProtectedRoute } from "./ProtectedRoute";
-import ForgotPassword from "./forgot-password/ForgotPassword";
+import ResetPassword from "./reset-password/ResetPassword";
 import ViewProject from "./view-project/ViewProject";
 import NotFound from "./NotFound";
 import AboutUs from "./about-us/AboutUs";
@@ -31,7 +31,7 @@ class Routes extends Component {
         "/",
         "/login",
         "/register",
-        "/forgot-password",
+        "/resetpassword",
         "/about-us",
         "/contact-us",
       ],
@@ -113,8 +113,8 @@ class Routes extends Component {
               component={CreateProject}
             ></ProtectedRoute>
             <Route
-              path="/forgot-password"
-              render={(props) => <ForgotPassword {...props}></ForgotPassword>}
+              path="/resetpassword"
+              render={(props) => <ResetPassword {...props}></ResetPassword>}
             ></Route>
             <Route
               path="/register"

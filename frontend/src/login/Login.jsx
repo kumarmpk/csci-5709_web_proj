@@ -1,3 +1,6 @@
+/* Author: Kethan Srinivas Dasari
+   Banner Id:  B00842485 
+*/
 import React, { Component } from "react";
 import "./Login.css";
 import axios from "axios";
@@ -57,6 +60,8 @@ class Login extends Component {
       .post("http://localhost:4000/login", { data: userData }, config)
       .then((res) => {
         if (res["status"] === 200) {
+          console.log("inner userdata", userData);
+
           auth.login(() => {
             this.props.history.push("/create");
           });
@@ -139,7 +144,7 @@ class Login extends Component {
                       <p />
                       <p className="forgot-password text-left">
                         Forgot password?{" "}
-                        <a href="/forgot-password"> Reset password</a>
+                        <a href="/resetpassword"> Reset password</a>
                       </p>
                       <p className="register text-left">
                         Don't have account?

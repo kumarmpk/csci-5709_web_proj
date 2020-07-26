@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { Component } from "react";
 import "../view-project/ViewProject.css";
 import errMsg from "../errormessages";
@@ -22,7 +23,7 @@ class CreateProject extends Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   //this method is called to close the create page without creating the project
   //it will navigate the user back to home page
@@ -33,9 +34,9 @@ class CreateProject extends Component {
   //this method is called to create the new project
   //and on completion it will navigate the user to home page of the application
   handleCreate = (e) => {
+    const { history } = this.props
     e.preventDefault();
-    console.log("selected:",this.state.selectedTeam);
-    
+    console.log("selected:", this.state.selectedTeam);
 
     this.setState({
       validationErrorFlag: false,
@@ -52,8 +53,7 @@ class CreateProject extends Component {
       this.state.name !== "" &&
       this.state.manager !== "" &&
       this.state.startDate !== "" &&
-      this.state.endDate !== "" &&
-      this.state.selectedTeam.name !== undefined
+      this.state.endDate !== ""
     ) {
       //end date cannot be lesser than start date
       if (this.state.startDate >= this.state.endDate) {
@@ -64,9 +64,22 @@ class CreateProject extends Component {
         return;
       }
 
-      this.setState({
-        modalFlag: true,
-      });
+      const URL = 'http://localhost:4000/project/createProject'
+      axios.post(URL, {
+        projectName: this.state.name, manager: this.state.manager,
+        startDate: this.state.startDate, endDate: this.state.endDate
+      }, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => {
+          console.log(res.data)
+          history.push('/home')
+        }).catch(({ response }) => {
+          console.log(response)
+        });
     } else {
       //form error is set here
       this.setState({
@@ -105,7 +118,6 @@ class CreateProject extends Component {
   };
 
   getDropDownTeamNames = (data) => {
-    // console.log("data:", data)
     return (
       <Dropdown.Item eventKey={data.id}>{data.name}</Dropdown.Item>
     )
@@ -149,60 +161,28 @@ class CreateProject extends Component {
                     />
                   </main>
 
-                  <div className="form-group">
-                    <label>Team*</label>
-                    <div className="row team-dropdown">
-                      <div className="col-5 pl-0" >
-                        <Dropdown className="my-auto ml-2 drop-down" onSelect={this.onSearchOptionSelect}>
-                          <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            {this.state.selectedTeam.name || 'Select Team'}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item eventKey="select" style={{ display: "none" }} disabled selected>Select Team</Dropdown.Item>
-                            {
-                              TeamDummyData.length > 0 ?
-                                TeamDummyData.map((data) =>
-                                  this.getDropDownTeamNames(data)
-                                ) : null
-                            }
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </div>
-                      <div className="col-7">
-                        {
-                          this.state.selectedTeam.name ? <Card>
-                            <div className="cardHeader text-center">
-                              <h5>Team Members</h5>
-                            </div>
-                          <p className="text-center">{this.state.selectedTeam.members.map((name, index) => name + `${index !== this.state.selectedTeam.members.length - 1 ? ", " : "."}`)}</p>
-                          </Card> : null
-                        }
-                      </div>
-
-                    </div>
-                  </div>
                   <section className="row">
-                  {/*The datepicker library is taken from https://www.npmjs.com/package/react-date-picker [8]. */}
-                  <main className="form-group col-6">
-                    <label>Start Date*</label>
-                    <DatePicker
-                      className="dateFields"
-                      value={this.state.startDate}
-                      onChange={this.handleStartDate}
-                      name="startDate"
-                    />
-                  </main>
+                    {/*The datepicker library is taken from https://www.npmjs.com/package/react-date-picker [8]. */}
+                    <main className="form-group col-6">
+                      <label>Start Date*</label>
+                      <DatePicker
+                        className="dateFields"
+                        value={this.state.startDate}
+                        onChange={this.handleStartDate}
+                        name="startDate"
+                      />
+                    </main>
 
-                  {/*The datepicker library is taken from https://www.npmjs.com/package/react-date-picker [8]. */}
-                  <main className="form-group col-6">
-                    <label>End Date*</label>
-                    <DatePicker
-                      className="dateFields"
-                      value={this.state.endDate}
-                      onChange={this.handleEndDate}
-                      name="endDate"
-                    />
-                  </main>
+                    {/*The datepicker library is taken from https://www.npmjs.com/package/react-date-picker [8]. */}
+                    <main className="form-group col-6">
+                      <label>End Date*</label>
+                      <DatePicker
+                        className="dateFields"
+                        value={this.state.endDate}
+                        onChange={this.handleEndDate}
+                        name="endDate"
+                      />
+                    </main>
                   </section>
                   <div className="form-group">
                     <label>Description</label>
@@ -214,19 +194,17 @@ class CreateProject extends Component {
                   )}
 
                   <section className="row justify-content-center">
-                  <button
-                    onClick={this.handleCreate}
-                    type="submit"
+                    <button
+                      onClick={this.handleCreate}
                       className="createProjectbutton btn btn-info col-7 m-2 text-center"
-                  >
-                    Create
+                    >
+                      Create
                   </button>
-                  <button
-                    onClick={this.handleClose}
-                    type="submit"
+                    <button
+                      onClick={this.handleClose}
                       className="createProjectbutton btn btn-info col-4 m-2 text-center"
-                  >
-                    Close
+                    >
+                      Close
                   </button>
                   </section>
                 </section>
@@ -234,18 +212,6 @@ class CreateProject extends Component {
             </section>
           </section>
         </section>
-
-        <Modal show={this.state.modalFlag} onHide={this.handleModalClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Create Project</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Project is created successfully.</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleModalClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
 
       </article>
     );
