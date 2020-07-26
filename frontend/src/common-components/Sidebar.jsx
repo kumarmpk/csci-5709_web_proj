@@ -36,6 +36,10 @@ export default class Sidebar extends React.Component {
               {" "}
               <a href="/search"> Search </a>{" "}
             </li>
+            <li>
+              {" "}
+              <a href="/teams/getteamproject"> Team </a>{" "}
+            </li>
           </ul>
         </div>
       </div>

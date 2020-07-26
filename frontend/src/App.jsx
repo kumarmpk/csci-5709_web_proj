@@ -22,6 +22,11 @@ import HomePageHeader from "../src/common-components/HomePageHeader";
 import Announcement from "../src/announcement/Announcement";
 import "./App.css";
 import ViewTask from "../src/view-task/ViewTask";
+import NewTeam from "./team/NewTeam";
+import Team from "./team/Team";
+import AddPeople from "./team/AddPeople";
+import Members from "./team/Members";
+import TeamProject from "./team/TeamProject";
 
 class Routes extends Component {
   constructor(props) {
@@ -112,6 +117,31 @@ class Routes extends Component {
               path="/createProject"
               component={CreateProject}
             ></ProtectedRoute>
+            <ProtectedRoute
+              path="/teams/getteamproject"
+              component={TeamProject}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/teams/manageteams"
+              component={Team}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/teams/deleteteam"
+              component={Team}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/teams/createteam"
+              component={NewTeam}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/teams/addmember/:teamId"
+              component={AddPeople}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/teams/addtoteam"
+              component={Members}
+            ></ProtectedRoute>
+
             <Route
               path="/resetpassword"
               render={(props) => <ResetPassword {...props}></ResetPassword>}
