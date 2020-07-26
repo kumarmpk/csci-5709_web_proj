@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import "./Projects.css";
-// import { Container, Row, Col } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import ProjectDummyData from "./ProjectDummyData";
@@ -9,24 +9,37 @@ export class Projects extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      filteredProjects: ProjectDummyData ? ProjectDummyData : [],
+      filteredProjects: [],
       text: "",
       searchOption: "pname",
     };
   }
 
+  componentDidMount() {
+    this.fetchProjects()
+  }
+
+  fetchProjects(projectName) {
+    const URL = 'http://localhost:4000/project/getProjects'
+    axios.get(URL, {
+      params: { projectName },
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        console.log(res.data)
+        this.setState({ filteredProjects: res.data })
+      })
+      .catch(({ response }) => {
+        console.log(response)
+      });
+  }
+
   onTextChanged = (e) => {
     const value = e.target.value.trim().toLowerCase();
-    // console.log("value:",value);
-
-    // let filteredProjects = [];
-    if (value.length > 0) {
-      this.searchForProjects(value);
-    } else if (value.length === 0) {
-      this.setState(() => ({
-        filteredProjects: ProjectDummyData ? ProjectDummyData : [],
-      }));
-    }
+    this.fetchProjects(value)
   };
 
   searchForProjects = (value) => {
@@ -34,24 +47,10 @@ export class Projects extends Component {
     let abs =
       ProjectDummyData.length > 0
         ? ProjectDummyData.map((obj, key) => {
-            if (this.state.searchOption === "pname") {
-              if (obj.name.toLowerCase().includes(value)) {
-                temp.push(obj);
-              }
-            } else if (this.state.searchOption === "tname") {
-              if (obj.team.toLowerCase().includes(value)) {
-                //add this to shortlisted projs
-                // console.log("dataTeam:", obj);
-                temp.push(obj);
-              }
-            } else {
-              if (obj.status.toLowerCase().includes(value)) {
-                //add this to shortlisted projs
-                // console.log("dataStatus:", obj);
-                temp.push(obj);
-              }
-            }
-          })
+          if (obj.projectName.toLowerCase().includes(value)) {
+            temp.push(obj);
+          }
+        })
         : null;
     this.setState(() => ({ filteredProjects: temp }));
   };
@@ -63,17 +62,17 @@ export class Projects extends Component {
           <thead className="thead-dark">
             <tr>
               <th>Project Name</th>
-              <th>Team Name</th>
-              <th>Status</th>
+              <th>Manager</th>
+              <th>End Date</th>
             </tr>
           </thead>
           <tbody>
             {this.state.filteredProjects.map((data) => {
               return (
                 <tr>
-                  <th>{data.name}</th>
-                  <td>{data.team}</td>
-                  <td>{data.status}</td>
+                  <th>{data.projectName}</th>
+                  <td>{data.manager || '-'}</td>
+                  <td>{new Date(data.endDate).toDateString()}</td>
                 </tr>
               );
             })}
@@ -81,22 +80,21 @@ export class Projects extends Component {
         </table>
       </div>
     ) : (
-      <div className="col-12 col-sm-12">
-        <table className="table table-striped">
-          <thead className="thead-dark">
-            <tr>
-              <th>Project Name</th>
-              <th>Team Name</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-        </table>
-        <h3>No projects matching with your search found</h3>
-      </div>
-    );
+        <div className="col-12 col-sm-12">
+          <table className="table table-striped">
+            <thead className="thead-dark">
+              <tr>
+                <th>Project Name</th>
+                <th>Team Name</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+          </table>
+          <h3>No projects matching with your search found</h3>
+        </div>
+      );
   };
   onSearchOptionSelect = (e) => {
-    // console.log("Selected:",e);
     this.setState(() => ({ searchOption: e }));
     console.log("sate:", this.state.searchOption);
   };
@@ -119,22 +117,9 @@ export class Projects extends Component {
                 className="form-control my-2 mr-sm-2 search border rounded"
                 type="search"
                 onChange={this.onTextChanged}
-                placeholder="Search"
+                placeholder="Search Project Name"
                 aria-label="Search"
               />
-              <Dropdown
-                className="my-auto ml-2 createButton"
-                onSelect={this.onSearchOptionSelect}
-              >
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                  {this.setDropDownName()}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item eventKey="pname">Project Name</Dropdown.Item>
-                  <Dropdown.Item eventKey="tname">Team Name</Dropdown.Item>
-                  <Dropdown.Item eventKey="status">Status</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
             </div>
           </div>
           <div className="container-fluid"></div>

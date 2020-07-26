@@ -1,3 +1,6 @@
+/* Author: Kethan Srinivas Dasari
+   Banner Id:  B00842485 
+*/
 .registerTitle {
   font-family: Spicy Rice;
   color: #000080;
@@ -5,9 +8,8 @@
   padding: 1rem;
 }
 
-.signup-div
-{
-    border: 1px solid white;
-    box-shadow: 0 5px 10px #efefef;
-    padding: 10px;
+.signup-div {
+  border: 1px solid white;
+  box-shadow: 0 5px 10px #efefef;
+  padding: 10px;
 }

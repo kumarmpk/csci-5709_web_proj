@@ -1,3 +1,6 @@
+/* Author: Kethan Srinivas Dasari
+   Banner Id:  B00842485 
+*/
 const mysql = require("mysql");
 const config = require("../../../config");
 
@@ -12,7 +15,7 @@ const LoginController = (userData, response) => {
     let email = userData.email;
     let password = userData.password;
 
-    let select_user_query = `SELECT userName from webproject.User where email='${email}' and password='${password}'`;
+    let select_user_query = `SELECT userID,userName from webproject.User where email='${email}' and password='${password}'`;
 
     database.query(select_user_query, function (error, result) {
         if (error) {
@@ -28,7 +31,7 @@ const LoginController = (userData, response) => {
         }
 
         console.log(result);
-        console.log(result[0]);
+        console.log(result[0]['userID']);
         console.log("User logged in successfully");
     });
 }
