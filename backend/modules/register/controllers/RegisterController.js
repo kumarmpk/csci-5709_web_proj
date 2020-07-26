@@ -1,3 +1,6 @@
+/* Author: Kethan Srinivas Dasari
+   Banner Id:  B00842485
+*/
 const mysql = require("mysql");
 const config = require("../../../config");
 
