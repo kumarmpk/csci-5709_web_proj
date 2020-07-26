@@ -89,7 +89,7 @@ class ViewTask extends Component {
     });
 
     if (taskid) {
-      let url = CONST.url + "task/user/1";
+      let url = CONST.URL + "task/user/1";
 
       await axios
         .get(url)
@@ -110,12 +110,22 @@ class ViewTask extends Component {
           });
         });
 
-      url = CONST.URL + `/task/${taskid}`;
+      let url2 = CONST.URL + `task/${taskid}`;
 
       await axios
-        .get(url, config)
+        .get(url2, config)
         .then((res) => {
           let decrypObj = this.decryptFunc(res.data);
+
+          if (decrypObj === 40 || decrypObj === "40") {
+            this.setState({
+              loading: false,
+              modalMsg: errMsg["27"],
+              modalFlag: true,
+              modalRoute: 1,
+            });
+            return;
+          }
 
           if (decrypObj && Object.keys(decrypObj).length) {
             Object.keys(decrypObj).forEach((key) => {

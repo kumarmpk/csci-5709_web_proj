@@ -17,9 +17,12 @@ task_router.get("/:id", (req, res) => {
     let id = req.params.id;
 
     get_task(id, (response) => {
+      console.log(response);
       if (response === "19") return res.status(500).send(encryptFunc("19"));
       else if (response) {
         return res.status(200).send(encryptFunc(response));
+      } else if (!response) {
+        return res.status(200).send(encryptFunc("40"));
       } else return res.status(500).send(encryptFunc("19"));
     });
   } catch (err) {
