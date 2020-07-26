@@ -61,7 +61,7 @@ class Create extends Component {
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/create",
+        "https://csci5709-group11-backend.herokuapp.com/create",
         JSON.stringify(this.state),
         config
       );
