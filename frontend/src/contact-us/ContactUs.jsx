@@ -195,108 +195,115 @@ class ContactUs extends Component {
           </Modal>
         </section>
 
-        <section className="row justify-content-center py-3">
-          <main className="contactUsForm col-12 col-sm-10 col-md-7 col-lg-7 col-xl-5 border rounded py-2 contactus-div">
-            <section className="contactUsCard">
-              <section className="contactUsCard-body">
-                <header className="contactUsTitle">
-                  <h2>Contact Us</h2>
-                </header>
+        <section className="container pt-4 pb-4">
+          <section className="row ">
+            <section className="container">
+              <section className="row justify-content-center">
+                <main className="contactUsForm col-12 col-sm-6 col-md-4 border rounded contactus-div">
+                  <section className="contactUsCard">
+                    <section className="contactUsCard-body">
+                      <header className="contactUsTitle">
+                        <h2>Contact Us</h2>
+                      </header>
 
-                <form>
-                  {errorMsg.length > 0 && (
-                    <span className="error">{errorMsg}</span>
-                  )}
-                  <section className="form-group">
-                    <label>Name*</label>
-                    <input
-                      required
-                      type="name"
-                      name="name"
-                      onChange={this.handleOnChange}
-                      value={this.state.name}
-                      className="form-control"
-                      placeholder="Enter name"
-                      maxLength="30"
-                    />
-                    {errors.name.length > 0 && (
-                      <span className="error">{errors.name}</span>
-                    )}
+                      <form>
+                        {errorMsg.length > 0 && (
+                          <span className="error">{errorMsg}</span>
+                        )}
+                        <section className="form-group">
+                          <label>Name*</label>
+                          <input
+                            required
+                            type="name"
+                            name="name"
+                            onChange={this.handleOnChange}
+                            value={this.state.name}
+                            className="form-control"
+                            placeholder="Enter name"
+                            maxLength="30"
+                          />
+                          {errors.name.length > 0 && (
+                            <span className="error">{errors.name}</span>
+                          )}
+                        </section>
+                        <section className="form-group">
+                          <label>Email Address*</label>
+                          <input
+                            required
+                            type="email"
+                            name="email"
+                            onChange={this.handleOnChange}
+                            value={this.state.email}
+                            className="form-control"
+                            placeholder="Enter email address"
+                            maxLength="40"
+                          />
+                          {errors.email.length > 0 && (
+                            <span className="error">{errors.email}</span>
+                          )}
+                        </section>
+                        <section className="form-group">
+                          <label>Subject*</label>
+                          <input
+                            required
+                            type="text"
+                            name="subject"
+                            onChange={this.handleOnChange}
+                            value={this.state.subject}
+                            className="form-control"
+                            placeholder="Enter subject"
+                            maxLength="150"
+                          />
+                        </section>
+                        <section className="form-group">
+                          <label>Message*</label>
+                          <textarea
+                            style={{ height: "7em" }}
+                            required
+                            type="text"
+                            name="message"
+                            onChange={this.handleOnChange}
+                            value={this.state.message}
+                            className="form-control"
+                            placeholder="Enter detailed description"
+                            maxLength="400"
+                          />
+                        </section>
+                        <section className="container text-center">
+                          <button
+                            onClick={this.handleContactUs}
+                            type="submit"
+                            className="btn btn-info btn-centre align"
+                          >
+                            Submit
+                          </button>
+                        </section>
+                      </form>
+                    </section>
                   </section>
-                  <section className="form-group">
-                    <label>Email Address*</label>
-                    <input
-                      required
-                      type="email"
-                      name="email"
-                      onChange={this.handleOnChange}
-                      value={this.state.email}
-                      className="form-control"
-                      placeholder="Enter email address"
-                      maxLength="40"
-                    />
-                    {errors.email.length > 0 && (
-                      <span className="error">{errors.email}</span>
-                    )}
-                  </section>
-                  <section className="form-group">
-                    <label>Subject*</label>
-                    <input
-                      required
-                      type="text"
-                      name="subject"
-                      onChange={this.handleOnChange}
-                      value={this.state.subject}
-                      className="form-control"
-                      placeholder="Enter subject"
-                      maxLength="150"
-                    />
-                  </section>
-                  <section className="form-group">
-                    <label>Message*</label>
-                    <textarea
-                      required
-                      type="text"
-                      name="message"
-                      onChange={this.handleOnChange}
-                      value={this.state.message}
-                      className="form-control"
-                      placeholder="Enter detailed description"
-                      maxLength="400"
-                    />
-                  </section>
-                  <section className="container text-center">
-                    <button
-                      onClick={this.handleContactUs}
-                      type="submit"
-                      className="btn btn-info btn-centre align"
-                    >
-                      Submit
-                    </button>
-                  </section>
-                </form>
+                </main>
+
+                <Modal
+                  show={this.state.modalFlag}
+                  onHide={this.handleModalClose}
+                  centered
+                >
+                  <Modal.Header closeButton>
+                    <Modal.Title>Contact Us</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    The details are successfully submitted to our team. We will
+                    get back to you as soon as possible.
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={this.handleModalClose}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </section>
             </section>
-          </main>
-
-          <Modal
-            show={this.state.modalFlag}
-            onHide={this.handleModalClose}
-            centered
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Contact Us</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              The details are successfully submitted to our team. We will get
-              back to you as soon as possible.
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleModalClose}>
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          </section>
         </section>
       </article>
     );

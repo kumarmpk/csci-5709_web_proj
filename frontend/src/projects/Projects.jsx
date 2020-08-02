@@ -4,6 +4,7 @@ import "./Projects.css";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import ProjectDummyData from "./ProjectDummyData";
+import CONST from "../constants";
 
 export class Projects extends Component {
   constructor(props) {
@@ -20,8 +21,8 @@ export class Projects extends Component {
   }
 
   fetchProjects(projectName) {
-    const URL =
-      "https://csci5709-group11-backend.herokuapp.com/project/getProjects";
+    const URL = CONST.URL + "project/getProjects";
+
     axios
       .get(URL, {
         params: { projectName },
