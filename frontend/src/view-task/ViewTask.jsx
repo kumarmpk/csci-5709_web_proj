@@ -79,8 +79,11 @@ class ViewTask extends Component {
 
     let taskid = this.props.location.state.taskid;
 
-    var config = {
-      headers: { "Content-Type": "application/json" },
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
     };
 
     this.setState({
@@ -90,13 +93,6 @@ class ViewTask extends Component {
 
     if (taskid) {
       let url = CONST.URL + "task/user/1";
-
-      var config = {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      };
 
       await axios
         .get(url, config)
@@ -226,6 +222,7 @@ class ViewTask extends Component {
       backendObj.taskid = this.state.taskid;
       backendObj.comment = this.state.comment;
       backendObj.status = this.state.status;
+      backendObj.userid = localStorage.userid;
 
       const headers = {
         "Content-Type": "application/json",
@@ -421,6 +418,11 @@ class ViewTask extends Component {
 
   render() {
     const dateString = "Date: ";
+
+    const showDelete = localStorage.role !== "developer";
+
+    console.log(this.state.commentList);
+
     return (
       <section>
         {this.state ? (
@@ -640,13 +642,15 @@ class ViewTask extends Component {
                         >
                           Update
                         </button>
-                        <button
-                          onClick={this.onDelete}
-                          type="submit"
-                          className="btn btn-info btn-centre ml-3 mt-4"
-                        >
-                          Delete
-                        </button>
+                        {showDelete ? (
+                          <button
+                            onClick={this.onDelete}
+                            type="submit"
+                            className="btn btn-info btn-centre ml-3 mt-4"
+                          >
+                            Delete
+                          </button>
+                        ) : null}
                         <button
                           onClick={this.onClose}
                           type="submit"
@@ -689,8 +693,7 @@ class ViewTask extends Component {
                                     alt="logo"
                                   />
                                   <text style={{ fontSize: "0.8em" }}>
-                                    &nbsp;Name: To be captured after login
-                                    module completion
+                                    &nbsp;Name: {comment.userName}
                                     <br />
                                     {dateString}
                                     {comment.date}
