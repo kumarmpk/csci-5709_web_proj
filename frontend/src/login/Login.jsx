@@ -5,6 +5,7 @@ import React, { Component } from "react";
 import "./Login.css";
 import axios from "axios";
 import auth from "../auth";
+import CONST from "../constants";
 
 class Login extends Component {
   state = {
@@ -57,12 +58,10 @@ class Login extends Component {
       password: this.state.password,
     };
 
+    let url = CONST.URL + "login";
+
     await axios
-      .post(
-        "https://csci5709-group11-backend.herokuapp.com/login",
-        { data: userData },
-        config
-      )
+      .post(url, { data: userData }, config)
       .then((res) => {
         if (res["status"] === 200) {
           console.log("inner userdata", userData);
