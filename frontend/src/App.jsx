@@ -27,6 +27,7 @@ import Team from "./team/Team";
 import AddPeople from "./team/AddPeople";
 import Members from "./team/Members";
 import TeamProject from "./team/TeamProject";
+import SprintManagement from "./sprint-management/SprintManagement";
 
 class Routes extends Component {
   constructor(props) {
@@ -150,6 +151,7 @@ class Routes extends Component {
               path="/register"
               render={(props) => <Register {...props}></Register>}
             ></Route>
+            <Route path="/sprint" component={SprintManagement}></Route>
             <Route path="/about-us" component={AboutUs}></Route>
             <Route path="/contact-us" component={ContactUs}></Route>
 
