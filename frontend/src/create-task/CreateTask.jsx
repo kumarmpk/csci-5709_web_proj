@@ -293,8 +293,6 @@ class CreateTask extends Component {
           loading: false,
         });
 
-        console.log(this.state);
-
         if (obj.sprint) {
           this.setState({
             sprintList: obj.sprint,
@@ -302,7 +300,6 @@ class CreateTask extends Component {
         }
       })
       .catch((err) => {
-        console.log("err", err);
         this.setState({
           loading: false,
           modalRoute: 1,
