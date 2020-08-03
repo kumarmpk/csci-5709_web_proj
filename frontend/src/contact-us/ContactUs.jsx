@@ -103,8 +103,6 @@ class ContactUs extends Component {
       mess = JSON.parse(mess);
       mess = mess.data;
 
-      console.log("mess", mess);
-
       if (mess === "18" || mess === 18) {
         this.setState({
           modalFlag: true,
@@ -273,7 +271,8 @@ class ContactUs extends Component {
                           <button
                             onClick={this.handleContactUs}
                             type="submit"
-                            className="btn btn-info btn-centre align"
+                            className="btn btn-primary btn-centre align"
+                            style={{ background: "#2888d1" }}
                           >
                             Submit
                           </button>

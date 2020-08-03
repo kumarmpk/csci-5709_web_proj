@@ -49,19 +49,19 @@
 }
 
 .landingPageSummaryFirst {
-  margin-left: 4em;
+  margin-left: 2em;
   padding-top: 3em;
   cursor: auto;
 }
 
 .landingPageSummary {
-  margin-left: 4em;
+  margin-left: 2em;
   padding-top: 3em;
   cursor: auto;
 }
 
 .landingPageSummary2 {
-  margin-left: 4em;
+  margin-left: 2em;
   padding-top: 1.5em;
   cursor: auto;
 }
@@ -86,7 +86,7 @@
 }
 
 .landingPageSummaryBody {
-  margin-left: 3em;
+  margin-left: 2em;
 }
 
 .aside {
@@ -107,7 +107,7 @@
 
 .landingPageSummaryLast {
   width: 45%;
-  margin-left: 4em;
+  margin-left: 2em;
   padding-top: 2em;
   margin-bottom: 4em;
   padding-bottom: 2em;

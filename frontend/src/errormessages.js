@@ -40,5 +40,7 @@ module.exports = {
   "31": "No attachment",
   "32": "Comments added",
   "33": "Error occured while updating password",
-  "34": "Password updated successfully"
+  "34": "Password updated successfully",
+  "35":
+    "User is not yet mapped to any project or team. Kindly use projects page to add the user to a project and teams page to add the user to a team before creating or viewing a task.",
 };

@@ -21,6 +21,11 @@ class ViewTask extends Component {
       return;
     }
 
+    let userId;
+    if (localStorage && localStorage.userid) {
+      userId = localStorage.userid;
+    }
+
     this.state = {
       taskid: "",
       projectList: [],
@@ -37,12 +42,7 @@ class ViewTask extends Component {
       priorityList: ["Low", "Medium", "High"],
       ownerList: [],
       creatorList: [],
-      sprintList: [
-        { id: "", name: "Select a sprint" },
-        { id: 1, name: "sprint1" },
-        { id: 2, name: "sprint2" },
-        { id: 3, name: "sprint3" },
-      ],
+      sprintList: [{ id: "", name: "Select a sprint" }],
       validationErrorFlag: false,
       errorMsg: "",
       modelFlag: false,
@@ -58,6 +58,7 @@ class ViewTask extends Component {
       blobData: "",
       commentList: [],
       comment: "",
+      userId: userId,
     };
   }
 
@@ -92,12 +93,21 @@ class ViewTask extends Component {
     });
 
     if (taskid) {
-      let url = CONST.URL + "task/user/1";
+      let url = CONST.URL + `task/user/${localStorage.userid}`;
 
       await axios
         .get(url, config)
         .then((res) => {
           let obj = this.decryptFunc(res.data);
+
+          if (!obj || Object.keys(obj).length === 0) {
+            this.setState({
+              loading: false,
+              modalFlag: true,
+              modalRoute: 2,
+              modalMsg: errMsg["35"],
+            });
+          }
 
           this.setState({
             projectList: obj.project,
@@ -117,7 +127,7 @@ class ViewTask extends Component {
 
       await axios
         .get(url2, config)
-        .then((res) => {
+        .then(async (res) => {
           let decrypObj = this.decryptFunc(res.data);
 
           if (decrypObj === 40 || decrypObj === "40") {
@@ -138,6 +148,44 @@ class ViewTask extends Component {
                 });
               }
             });
+
+            let url3 =
+              CONST.URL + `task/${decrypObj.projectid}/${this.state.userId}`;
+
+            await axios
+              .get(url3)
+              .then((res) => {
+                let obj = this.decryptFunc(res.data);
+
+                if (!obj || Object.keys(obj).length === 0) {
+                  this.setState({
+                    loading: false,
+                    modalFlag: true,
+                    modalRoute: 1,
+                    modalMsg: errMsg["35"],
+                  });
+                }
+
+                this.setState({
+                  ownerList: obj.user,
+                  creatorList: obj.user,
+                  loading: false,
+                });
+
+                if (obj.sprint) {
+                  this.setState({
+                    sprintList: obj.sprint,
+                  });
+                }
+              })
+              .catch((err) => {
+                this.setState({
+                  loading: false,
+                  modalRoute: 1,
+                  modalMsg: errMsg["19"],
+                  modalFlag: true,
+                });
+              });
 
             if (this.state.duedate) {
               let date = this.state.duedate;
@@ -421,8 +469,6 @@ class ViewTask extends Component {
 
     const showDelete = localStorage.role !== "developer";
 
-    console.log(this.state.commentList);
-
     return (
       <section>
         {this.state ? (
@@ -454,14 +500,15 @@ class ViewTask extends Component {
                             name="projectid"
                             disabled
                           >
-                            {this.state.projectList.map((projectOption) => (
-                              <option
-                                key={projectOption.name}
-                                value={projectOption.id}
-                              >
-                                {projectOption.name}
-                              </option>
-                            ))}
+                            {this.state.projectList &&
+                              this.state.projectList.map((projectOption) => (
+                                <option
+                                  key={projectOption.name}
+                                  value={projectOption.id}
+                                >
+                                  {projectOption.name}
+                                </option>
+                              ))}
                           </select>
                         </section>
                         <section className="form-group col-12 col-sm-12 col-md-4">
@@ -485,14 +532,15 @@ class ViewTask extends Component {
                             name="status"
                             required
                           >
-                            {this.state.statusList.map((statusOption) => (
-                              <option
-                                key={statusOption.value}
-                                value={statusOption.id}
-                              >
-                                {statusOption.value}
-                              </option>
-                            ))}
+                            {this.state.statusList &&
+                              this.state.statusList.map((statusOption) => (
+                                <option
+                                  key={statusOption.value}
+                                  value={statusOption.id}
+                                >
+                                  {statusOption.value}
+                                </option>
+                              ))}
                           </select>
                         </section>
                       </section>
@@ -560,14 +608,15 @@ class ViewTask extends Component {
                             name="owner"
                             required
                           >
-                            {this.state.ownerList.map((ownerOption) => (
-                              <option
-                                key={ownerOption.name}
-                                value={ownerOption.id}
-                              >
-                                {ownerOption.name}
-                              </option>
-                            ))}
+                            {this.state.ownerList &&
+                              this.state.ownerList.map((ownerOption) => (
+                                <option
+                                  key={ownerOption.name}
+                                  value={ownerOption.id}
+                                >
+                                  {ownerOption.name}
+                                </option>
+                              ))}
                           </select>
                         </section>
                         <section className="form-group col-12 col-sm-12 col-md-4">
@@ -594,14 +643,15 @@ class ViewTask extends Component {
                             name="creator"
                             disabled
                           >
-                            {this.state.creatorList.map((creatorOption) => (
-                              <option
-                                key={creatorOption.name}
-                                value={creatorOption.id}
-                              >
-                                {creatorOption.name}
-                              </option>
-                            ))}
+                            {this.state.creatorList &&
+                              this.state.creatorList.map((creatorOption) => (
+                                <option
+                                  key={creatorOption.name}
+                                  value={creatorOption.id}
+                                >
+                                  {creatorOption.name}
+                                </option>
+                              ))}
                           </select>
                         </section>
                         <section className="form-group col-12 col-sm-12 col-md-4">
