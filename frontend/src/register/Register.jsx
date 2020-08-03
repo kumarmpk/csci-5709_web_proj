@@ -4,6 +4,7 @@
 import React, { Component } from "react";
 import "./Register.css";
 import axios from "axios";
+import CONST from "../constants";
 
 class Register extends Component {
   constructor(props) {
@@ -93,11 +94,9 @@ class Register extends Component {
 
     console.log(userData);
 
-    const res = await axios.post(
-      "https://csci5709-group11-backend.herokuapp.com/register",
-      { data: userData },
-      config
-    );
+    let url = CONST.URL + "register";
+
+    const res = await axios.post(url, { data: userData }, config);
 
     this.props.history.push("/login");
     console.log(res);

@@ -15,6 +15,10 @@ class CreateTask extends Component {
   constructor(props) {
     super(props);
 
+    let userId;
+    if (localStorage && localStorage.userid) {
+      userId = localStorage.userid;
+    }
     this.state = {
       projectList: [],
       project: "",
@@ -22,19 +26,14 @@ class CreateTask extends Component {
       type: "Task",
       overview: "",
       description: "",
-      creatorList: [],
+      creatorList: [{ id: "", name: "Select a User" }],
       creator: "",
       priorityList: ["Low", "Medium", "High"],
       priority: "Low",
       environment: "",
-      ownerList: [],
+      ownerList: [{ id: "", name: "Select a User" }],
       owner: "",
-      sprintList: [
-        { id: "", name: "Select a sprint" },
-        { id: 1, name: "sprint1" },
-        { id: 2, name: "sprint2" },
-        { id: 3, name: "sprint3" },
-      ],
+      sprintList: [{ id: "", name: "Select a sprint" }],
       sprint: "",
       duedate: "",
       validationErrorFlag: false,
@@ -43,11 +42,23 @@ class CreateTask extends Component {
       id: "",
       loading: false,
       modalRoute: 0,
+      userId: userId,
     };
   }
 
   componentDidMount() {
     this.fetchAllDetails();
+  }
+
+  decryptFunc(input) {
+    let key = crypto.createDecipher(
+      CONST.encryption_algorithm,
+      CONST.encryption_password
+    );
+    let output = key.update(input, "hex", "utf8");
+    output += key.final("utf8");
+    output = JSON.parse(output);
+    return output;
   }
 
   async fetchAllDetails() {
@@ -61,25 +72,23 @@ class CreateTask extends Component {
     this.setState({
       loading: true,
     });
-    let url = CONST.URL + "task/user/1";
+    let url = CONST.URL + `task/user/${this.state.userId}`;
     await axios
       .get(url, config)
       .then((res) => {
-        let encryp_mess = res.data;
+        let obj = this.decryptFunc(res.data);
 
-        let dmykey = crypto.createDecipher(
-          CONST.encryption_algorithm,
-          CONST.encryption_password
-        );
-        let obj = dmykey.update(encryp_mess, "hex", "utf8");
-        obj += dmykey.final("utf8");
-
-        obj = JSON.parse(obj);
+        if (!obj || Object.keys(obj).length === 0) {
+          this.setState({
+            loading: false,
+            modalFlag: true,
+            modalRoute: 1,
+            modalMsg: errMsg["35"],
+          });
+        }
 
         this.setState({
           projectList: obj.project,
-          ownerList: obj.user,
-          creatorList: obj.user,
           loading: false,
         });
       })
@@ -245,11 +254,63 @@ class CreateTask extends Component {
   };
 
   handleOnChange = (e) => {
+    let name = e.target.name;
+    let value = e.target.value;
     this.setState({
-      [e.target.name]: e.target.value,
+      [name]: value,
       validationErrorFlag: false,
     });
+
+    if (name === "project") {
+      this.getProjectSpecificDetails(value);
+    }
   };
+
+  async getProjectSpecificDetails(projectId) {
+    this.setState({
+      loading: true,
+    });
+
+    let url = CONST.URL + `task/${projectId}/${this.state.userId}`;
+
+    await axios
+      .get(url)
+      .then((res) => {
+        let obj = this.decryptFunc(res.data);
+
+        if (!obj || Object.keys(obj).length === 0) {
+          this.setState({
+            loading: false,
+            modalFlag: true,
+            modalRoute: 1,
+            modalMsg: errMsg["35"],
+          });
+        }
+
+        this.setState({
+          ownerList: obj.user,
+          creatorList: obj.user,
+          loading: false,
+        });
+
+        console.log(this.state);
+
+        if (obj.sprint) {
+          this.setState({
+            sprintList: obj.sprint,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log("err", err);
+        this.setState({
+          loading: false,
+          modalRoute: 1,
+          modalMsg: errMsg["19"],
+          modalFlag: true,
+        });
+      });
+  }
 
   handleModalClose = (e) => {
     if (this.state.modalRoute === 1) {
@@ -296,14 +357,15 @@ class CreateTask extends Component {
                           name="project"
                           required
                         >
-                          {this.state.projectList.map((projectOption) => (
-                            <option
-                              key={projectOption.name}
-                              value={projectOption.id}
-                            >
-                              {projectOption.name}
-                            </option>
-                          ))}
+                          {this.state.projectList &&
+                            this.state.projectList.map((projectOption) => (
+                              <option
+                                key={projectOption.name}
+                                value={projectOption.id}
+                              >
+                                {projectOption.name}
+                              </option>
+                            ))}
                         </select>
                       </section>
                       <section className="form-group col-12 col-sm-12 col-md-6">
@@ -385,14 +447,15 @@ class CreateTask extends Component {
                           name="owner"
                           required
                         >
-                          {this.state.ownerList.map((ownerOption) => (
-                            <option
-                              key={ownerOption.name}
-                              value={ownerOption.id}
-                            >
-                              {ownerOption.name}
-                            </option>
-                          ))}
+                          {this.state.ownerList &&
+                            this.state.ownerList.map((ownerOption) => (
+                              <option
+                                key={ownerOption.name}
+                                value={ownerOption.id}
+                              >
+                                {ownerOption.name}
+                              </option>
+                            ))}
                         </select>
                       </section>
                     </section>
@@ -420,14 +483,15 @@ class CreateTask extends Component {
                           name="creator"
                           required
                         >
-                          {this.state.creatorList.map((creatorOption) => (
-                            <option
-                              key={creatorOption.name}
-                              value={creatorOption.id}
-                            >
-                              {creatorOption.name}
-                            </option>
-                          ))}
+                          {this.state.creatorList &&
+                            this.state.creatorList.map((creatorOption) => (
+                              <option
+                                key={creatorOption.name}
+                                value={creatorOption.id}
+                              >
+                                {creatorOption.name}
+                              </option>
+                            ))}
                         </select>
                       </section>
                     </section>

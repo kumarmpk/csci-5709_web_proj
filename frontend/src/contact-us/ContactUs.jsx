@@ -273,7 +273,8 @@ class ContactUs extends Component {
                           <button
                             onClick={this.handleContactUs}
                             type="submit"
-                            className="btn btn-info btn-centre align"
+                            className="btn btn-primary btn-centre align"
+                            style={{ background: "#2888d1" }}
                           >
                             Submit
                           </button>
