@@ -17,18 +17,25 @@ class SprintManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        projectID: 1,
-        Sprints: [],
-        Tasks: [],
-        ActiveSprintAvailable: false,
-        ActiveSprintOrder: null,
-        ActiveSprintID: null,
-        MinOrder: null,
-        createSprintModalFlag: false,
-        deleteSprintModalFlag: false,
-        editSprintModalFlag: false,
-        editActiveSprintModalFlag: false,
-        errorMsg: "",
+      projectID: 1,
+      Sprints: [],
+      Tasks: [],
+      ActiveSprintAvailable: false,
+      ActiveSprintOrder: null,
+      ActiveSprintID: null,
+      MinOrder: null,
+      createSprintModalFlag: false,
+      deleteSprintModalFlag: false,
+      editSprintModalFlag: false,
+      editActiveSprintModalFlag: false,
+      errorMsg: "",
+      serverURL: "http://localhost:4000/sprint/",
+      corsHeader: {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
     };
     if (Sprints[0]) {
       let minOrder = Sprints[0]["order"];
@@ -47,15 +54,15 @@ class SprintManagement extends Component {
   }
 
   componentDidMount() {
-    URL = "http://localhost:4000/sprint/";
-    var config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    };
+    // URL = "http://localhost:4000/sprint/";
+    // var config = {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Access-Control-Allow-Origin": "*",
+    //   },
+    // };
     axios
-      .post(URL + 'getSprint', { projectID: this.state.projectID }, config)
+      .post(this.state.serverURL + 'getSprint', { projectID: this.state.projectID }, this.state.corsHeader)
       .then((response) => {
         this.setState({
           Sprints: response.data["data"],
@@ -63,7 +70,7 @@ class SprintManagement extends Component {
         console.log("res: ",response.data['data']);
 
         axios
-          .post(URL + "getTask", { projectID: this.state.projectID }, config)
+          .post(this.state.serverURL + "getTask", { projectID: this.state.projectID }, this.state.corsHeader)
           .then((response) => {
             this.setState({
               Tasks: response.data["data"],
@@ -147,40 +154,86 @@ class SprintManagement extends Component {
   };
 
   onDrop = (ev, sprintid) => {
-    let taskid = ev.dataTransfer.getData("taskid");
+    let taskid = Number(ev.dataTransfer.getData("taskid"));
     console.log("Drop: ", taskid);
-    let tasks = this.state.Tasks.filter((task) => {
-      if (task.taskid == taskid) {
-        task.sprintid = sprintid;
-      }
-      return task;
-    });
-
-    console.log("latest: ", tasks);
-
-    this.setState({
-      ...this.state,
-      tasks,
-    });
+    axios
+          .put(this.state.serverURL + "modifyTaskSprint", { projectID: this.state.projectID, taskID: taskid, newSprintID: sprintid }, this.state.corsHeader)
+          .then((response) => {
+            console.log("resTask: ", response.data["data"]);
+            //get new tasks details
+            axios
+                .post(this.state.serverURL + "getTask", { projectID: this.state.projectID }, this.state.corsHeader)
+                .then((response) => {
+                    this.setState({
+                    Tasks: response.data["data"],
+                    });
+                    console.log("resTask: ", response.data["data"]);
+                })
+                .catch((error) => {
+                                    console.log("error_fetch_task_modify", error.response.data.msg);
+                                    this.setState({
+                                        errorMsg: error.response.data.msg,
+                                    });
+                                    });
+          })
+          .catch((error) => {
+                              console.log("error_modify_sprint_task", error.response.data.msg);
+                              this.setState({
+                                errorMsg: error.response.data.msg,
+                              });
+                            });
   };
 
-  onDrop = (ev, actSprintId, status) => {
-    let taskid = ev.dataTransfer.getData("taskid");
+  onDropActive = (ev, actSprintId, status) => {
+    let taskid = Number(ev.dataTransfer.getData("taskid"));
     console.log("Drop: ", taskid);
-    let tasks = this.state.Tasks.filter((task) => {
-      if (task.taskid == taskid) {
-        task.sprintid = actSprintId;
-        task.status = status;
-      }
-      return task;
-    });
+    // let tasks = this.state.Tasks.filter((task) => {
+    //   if (task.taskid == taskid) {
+    //     task.sprintid = actSprintId;
+    //     task.status = status;
+    //   }
+    //   return task;
+    // });
 
-    console.log("latest: ", tasks);
-
-    this.setState({
-      ...this.state,
-      tasks,
-    });
+    
+    axios
+          .put(this.state.serverURL + "modifyTaskSprint", { projectID: this.state.projectID, taskID: taskid, newSprintID: actSprintId }, this.state.corsHeader)
+          .then((response) => {
+            console.log("resTask: ", response.data["data"]);
+            //get new tasks details
+            axios.put(this.state.serverURL + "modifyTaskStatus", { projectID: this.state.projectID, taskID: taskid, sprintID: actSprintId, newStatus: status }, this.state.corsHeader)
+            .then((response) => {
+            console.log("resTask: ", response.data["data"]);
+            //get new tasks details
+            axios
+                .post(this.state.serverURL + "getTask", { projectID: this.state.projectID }, this.state.corsHeader)
+                .then((response) => {
+                    this.setState({
+                    Tasks: response.data["data"],
+                    });
+                    console.log("resTask: ", response.data["data"]);
+                })
+                .catch((error) => {
+                                    console.log("error_fetch_task_modify", error.response.data.msg);
+                                    this.setState({
+                                        errorMsg: error.response.data.msg,
+                                    });
+                                    });
+          })
+          .catch((error) => {
+                              console.log("error_modify_status_task", error.response.data.msg);
+                              this.setState({
+                                errorMsg: error.response.data.msg,
+                              });
+                            });
+          })
+          .catch((error) => {
+                              console.log("error_modify_sprint_task", error.response.data.msg);
+                              this.setState({
+                                errorMsg: error.response.data.msg,
+                              });
+                            });
+    console.log("latest: ", this.state.Tasks);
   };
 
   render() {
@@ -213,7 +266,7 @@ class SprintManagement extends Component {
               <section
                 className="min-vh-25 border rounded"
                 onDragOver={(e) => this.onDragOver(e)}
-                onDrop={(e) => this.onDrop(e, this.state.ActiveSprintID, null)}
+                onDrop={(e) => this.onDropActive(e, this.state.ActiveSprintID, null)}
               >
                 {this.state.Tasks.map((Task) =>
                   Task["sprintid"] == this.state.ActiveSprintID &&
@@ -236,7 +289,7 @@ class SprintManagement extends Component {
               <section
                 className="min-vh-25 border rounded"
                 onDragOver={(e) => this.onDragOver(e)}
-                onDrop={(e) => this.onDrop(e, this.state.ActiveSprintID, 0)}
+                onDrop={(e) => this.onDropActive(e, this.state.ActiveSprintID, 0)}
               >
                 {this.state.Tasks.map((Task) =>
                   Task["sprintid"] == this.state.ActiveSprintID &&
@@ -259,7 +312,7 @@ class SprintManagement extends Component {
               <section
                 className="min-vh-25 border rounded"
                 onDragOver={(e) => this.onDragOver(e)}
-                onDrop={(e) => this.onDrop(e, this.state.ActiveSprintID, 1)}
+                onDrop={(e) => this.onDropActive(e, this.state.ActiveSprintID, 1)}
               >
                 {this.state.Tasks.map((Task) =>
                   Task["sprintid"] == this.state.ActiveSprintID &&
