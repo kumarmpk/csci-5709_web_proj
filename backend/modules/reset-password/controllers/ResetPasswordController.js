@@ -33,7 +33,7 @@ const ResetPasswordController = (userData, response) => {
         } else {
             response("33")
         }
-        console.log(result)
+        console.log(result);
     });
 }
 
