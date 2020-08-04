@@ -17,11 +17,11 @@ let query = "use " + config.mySQLConfig.database;
 
 connect.connect(function (error) {
   if (error) {
-    throw error;
+    console.log("Error ", error);
   }
   connect.query(query, function (error, result) {
     if (error) {
-      throw error;
+      console.log("Error ", error);
     }
     console.log("DB is connected");
   });
@@ -34,7 +34,7 @@ exports.getAllTeams = (req, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json(result);
     console.log("get all teams executed");
@@ -49,7 +49,7 @@ exports.getNotMembers = (req, res) => {
   let sqlquery2 = connect.query(sql2, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json(result);
 
@@ -64,7 +64,7 @@ exports.addNewMember2 = (req, res) => {
   let sqlquery2 = connect.query(sql2, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json(result);
 
@@ -78,7 +78,7 @@ exports.deleteMember = (req, res) => {
   let sqlquery2 = connect.query(sql2, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json("1 Member deleted");
 
@@ -94,7 +94,7 @@ exports.getAllMembers = (req, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json(result);
 
@@ -111,7 +111,7 @@ exports.getAllProjects = (req, res) => {
     let sqlquery = connect.query(sql, (err, result) => {
       if (err) {
         console.log("error occured");
-        throw err;
+        console.log("Error ", err);
       }
       res.status(200).json(result);
 
@@ -124,7 +124,7 @@ exports.getAllProjects = (req, res) => {
     let sqlquery = connect.query(sql, (err, result) => {
       if (err) {
         console.log("error occured");
-        throw err;
+        console.log("Error ", err);
       }
       res.status(200).json(result);
 
@@ -139,13 +139,13 @@ exports.addNewTeam = (userData, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     let sql2 = `Select teamID from Team where teamName= '${userData}'; `;
     let sqlquery2 = connect.query(sql2, (err, result) => {
       if (err) {
         console.log("error occured");
-        throw err;
+        console.log("Error ", err);
       }
 
       var string = JSON.stringify(result);
@@ -155,7 +155,7 @@ exports.addNewTeam = (userData, res) => {
       let sqlquery3 = connect.query(sql3, (err, result) => {
         if (err) {
           console.log("error occured");
-          throw err;
+          console.log("Error ", err);
         }
 
         console.log("Team created successfully");
@@ -171,7 +171,7 @@ exports.addNewMember = (userData, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     console.log(" 1 Member added successfully");
   });
@@ -184,7 +184,7 @@ exports.deleteTeam = (req, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
   });
   let sql2 = `Delete from projectUserTeam where team_ID='${req.params.id}';`;
@@ -192,7 +192,7 @@ exports.deleteTeam = (req, res) => {
   let sqlquery2 = connect.query(sql2, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
   });
   let sql3 = `Delete from Team where teamID='${req.params.id}';`;
@@ -200,7 +200,7 @@ exports.deleteTeam = (req, res) => {
   let sqlquery3 = connect.query(sql3, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     return res.status(200).send("Team Deleted successfully");
   });
@@ -212,7 +212,7 @@ getteamid = (userData, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.json(result);
   });

@@ -25,7 +25,7 @@ let transporter = nodemailer.createTransport({
 
 transporter.verify((error, success) => {
   if (error) {
-    console.log(error);
+    console.log("error", error);
   }
 });
 
