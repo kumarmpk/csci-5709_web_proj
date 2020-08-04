@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 const initialState = {
   docs: [],
@@ -33,6 +34,7 @@ class DocumentUpdate extends Component {
       var config = {
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
       };
 
@@ -41,12 +43,11 @@ class DocumentUpdate extends Component {
         documentText: this.state.docText,
       };
       const docID = this.getParam();
+      let url = CONST.URL + "docs/updatedocs/" + docID;
 
-      axios
-        .put("http://localhost:4000/docs/updatedocs/" + docID, userData, config)
-        .then((res) => {
-          // console.log(res);
-        });
+      axios.put(url, userData, config).then((res) => {
+        // console.log(res);
+      });
 
       this.setState(initialState);
       this.handleModal();
@@ -130,9 +131,17 @@ class DocumentUpdate extends Component {
   };
   //it will be executed after the whole page is loaded
   componentDidMount() {
-    const r = this.getParam();
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
 
-    axios.get("http://localhost:4000/docs/updatedocs/" + r).then((res) => {
+    const r = this.getParam();
+    let url = CONST.URL + "docs/updatedocs/" + r;
+
+    axios.get(url, config).then((res) => {
       // console.log(res);
       this.setState({
         docs: res.data,

@@ -9,7 +9,23 @@ class HomePageHeader extends Component {
     super(props);
     this.state = {
       search: "",
+      show: false,
     };
+  }
+
+  handleUser = () => {
+    this.setState({ show: !this.state.show });
+    console.log("state=" + this.state.show);
+  };
+
+  componentDidMount() {
+    let uRole = localStorage.role;
+    console.log("uRole=" + uRole);
+    console.log("state before=" + this.state.show);
+
+    if (uRole === "admin" || uRole === "manager") {
+      this.handleUser();
+    }
   }
 
   handleLogout = (e) => {
@@ -74,19 +90,27 @@ class HomePageHeader extends Component {
               <Nav.Link className="text-light font-weight-bold" href="/home">
                 Projects
               </Nav.Link>
-              <Nav.Link className="text-light font-weight-bold" href="/announcements">
+              <Nav.Link
+                className="text-light font-weight-bold"
+                href="/announcements"
+              >
                 Announcements
               </Nav.Link>
               <Nav.Link className="text-light font-weight-bold" href="/create">
                 Create
               </Nav.Link>
+              {this.state.show && (
+                <Nav.Link
+                  className="text-light font-weight-bold"
+                  href="/teams/getteamproject"
+                >
+                  Teams
+                </Nav.Link>
+              )}
               <Nav.Link
                 className="text-light font-weight-bold"
-                href="/teams/getteamproject"
+                href="/docs/getprojectdocs"
               >
-                Teams
-              </Nav.Link>
-              <Nav.Link className="text-light font-weight-bold" href="/docs/getprojectdocs">
                 Documents
               </Nav.Link>
             </Nav>
