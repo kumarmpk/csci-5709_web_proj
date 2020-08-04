@@ -31,6 +31,7 @@ import DocumentsProject from "./documents/DocumentsProject";
 import Documents from "./documents/Documents";
 import NewDocument from "./documents/NewDocument";
 import DocumentUpdate from "./documents/DocumentUpdate";
+import SprintManagement from "./sprint-management/SprintManagement";
 
 class Routes extends Component {
   constructor(props) {
@@ -174,6 +175,7 @@ class Routes extends Component {
               path="/register"
               render={(props) => <Register {...props}></Register>}
             ></Route>
+            <Route path="/sprint" component={SprintManagement}></Route>
             <Route path="/about-us" component={AboutUs}></Route>
             <Route path="/contact-us" component={ContactUs}></Route>
 
