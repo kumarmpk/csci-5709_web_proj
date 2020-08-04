@@ -1,1 +1,0 @@
-Sprint Management feature with array of data without database connection
