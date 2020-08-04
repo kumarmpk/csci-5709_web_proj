@@ -7,24 +7,12 @@ const mysql = require("mysql");
 const config = require("../../../config");
 const { contactUs } = require("../../../constants");
 
-let connect = mysql.createConnection({
+let db = mysql.createPool({
   host: config.mySQLConfig.host,
   user: config.mySQLConfig.user,
   password: config.mySQLConfig.password,
   port: config.mySQLConfig.port,
-});
-
-let query = "use " + config.mySQLConfig.database;
-
-connect.connect(function (error) {
-  if (error) {
-    throw error;
-  }
-  connect.query(query, function (error, result) {
-    if (error) {
-      throw error;
-    }
-  });
+  database: config.mySQLConfig.database,
 });
 
 let transporter = nodemailer.createTransport({
@@ -99,9 +87,9 @@ const post_contact_us = (contact_us_obj, response) => {
           user_email_subject = handleSpecialChar(user_email_subject);
           user_message = handleSpecialChar(user_message);
 
-          let query = `insert into ContactUs(username, emailaddress, subject, description, date, 
-              usermailstatus, teammailstatus) values ('${username}', '${user_email_address}', 
-              '${user_email_subject}', '${user_message}', sysdate(), '${userMailStatus}', '${teamMailStatus}');`;
+          let query = `insert into ContactUs(status, username, emailaddress, subject, description, date, 
+              usermailstatus, teammailstatus) values ('Open', '${username}', '${user_email_address}', 
+              '${user_email_subject}', '${user_message}', now(), '${userMailStatus}', '${teamMailStatus}');`;
 
           dbExecute(query, (dbResponse) => {
             if (
@@ -119,15 +107,23 @@ const post_contact_us = (contact_us_obj, response) => {
     });
   } catch (e) {
     response("19");
+    connect.end();
   }
 };
 
 function dbExecute(query, response) {
-  connect.query(query, (err, result) => {
+  db.getConnection((err, connection) => {
     if (err) {
       response("19");
     } else {
-      response("18");
+      connection.query(query, (err, result) => {
+        if (err) {
+          response("19");
+        } else {
+          connection.release();
+          response("18");
+        }
+      });
     }
   });
 }

@@ -1,18 +1,9 @@
 /*author :Japnoor Kaur */
-
 import React, { Component } from "react";
 import axios from "axios";
 import "./AddPeople.css";
 import { Modal } from "react-bootstrap";
 import CONST from "../constants";
-
-import {
-  Link,
-  withRouter,
-  Route,
-  useLocation,
-  useHistory,
-} from "react-router-dom";
 
 class Members extends Component {
   state = {
@@ -37,8 +28,8 @@ class Members extends Component {
 
     let url = CONST.URL + "teams/addtoteam";
 
-    const res = axios.post(url, userData, config).then((res) => {
-      console.log(res);
+    axios.post(url, userData, config).then((res) => {
+      // console.log(res);
     });
     this.handleModal();
   };
@@ -46,7 +37,7 @@ class Members extends Component {
   //method to handle modal to get user know that specific task is done
   handleModal = () => {
     this.setState({ show: !this.state.show });
-    if (this.state.show == true) {
+    if (this.state.show === true) {
       window.location.reload();
     }
   };
@@ -71,7 +62,7 @@ class Members extends Component {
     let url = CONST.URL + "teams/addtoteam";
 
     axios.get(url, config).then((res) => {
-      console.log(res);
+      //  console.log(res);
       this.setState({
         users: res.data,
       });
@@ -86,43 +77,50 @@ class Members extends Component {
             <div className="col-12 col-sm-8 col-md-11 col-lg-10 border rounded">
               <div className="format">
                 <br />
-                <h3 className="message">Team Management</h3>
+                <h3>Team Management</h3>
                 <form onSubmit={this.btnClick}>
                   <br />
-                  <label className="textformat" for="people">
-                    Choose a member to add:
-                  </label>
-                  <br />
-                  <br />
-                  <select
-                    className="teamDropdown"
-                    value={this.state.userName}
-                    onChange={(e) =>
-                      this.setState({ userName: e.target.value })
-                    }
-                  >
-                    <option
-                      className="teamDropdown"
-                      class="placeholder"
-                      selected
-                      disabled
-                      value=""
-                    >
-                      Select user
-                    </option>
-                    {this.state.users.map((user) => (
-                      <option value={user.userName}>{user.userName}</option>
-                    ))}
-                  </select>{" "}
-                  <br />
-                  <br />
-                  <br />
+                  <table className="table table-hover">
+                    <thead className="thead-dark">
+                      <tr>
+                        <th className="teamTh">
+                          Members (Choose a member to add)
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="format" style={{ paddingLeft: "25%" }}>
+                        <td style={{ paddingLeft: "25%" }}>
+                          <select
+                            className="form-control"
+                            value={this.state.userName}
+                            style={{ width: "70%" }}
+                            onChange={(e) =>
+                              this.setState({ userName: e.target.value })
+                            }
+                          >
+                            <option className="teamDropdown" disabled value="">
+                              Select user
+                            </option>
+                            {this.state.users.map((user) => (
+                              <option value={user.userName} key={user.userName}>
+                                {user.userName}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <br />
                   <button className="btn btn-info" type="submit">
                     Add Member
                   </button>
                 </form>
                 <br />
+                <div>
+                  <a href="/teams/getteamproject"> Go to Teams </a>{" "}
+                </div>
 
                 <br />
                 <br />
@@ -134,7 +132,12 @@ class Members extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                       {" "}
-                      <button onClick={this.handleModal}>Close</button>
+                      <button
+                        className="btn btn-info"
+                        onClick={this.handleModal}
+                      >
+                        Close
+                      </button>
                     </Modal.Footer>
                   </Modal>
                 </div>

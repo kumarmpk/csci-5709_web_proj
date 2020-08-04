@@ -27,6 +27,10 @@ import Team from "./team/Team";
 import AddPeople from "./team/AddPeople";
 import Members from "./team/Members";
 import TeamProject from "./team/TeamProject";
+import DocumentsProject from "./documents/DocumentsProject";
+import Documents from "./documents/Documents";
+import NewDocument from "./documents/NewDocument";
+import DocumentUpdate from "./documents/DocumentUpdate";
 
 class Routes extends Component {
   constructor(props) {
@@ -55,9 +59,9 @@ class Routes extends Component {
 
     return (
       <article className="">
-        <section className="row no-margin-row">
+        {/* <section className="row no-margin-row">
           {isAuthenticated ? null : <Sidebar />}
-        </section>
+        </section> */}
 
         {isAuthenticated ? (
           <header className={isAuthenticated ? null : "margin-col-content"}>
@@ -141,7 +145,22 @@ class Routes extends Component {
               path="/teams/addtoteam"
               component={Members}
             ></ProtectedRoute>
-
+            <ProtectedRoute
+              path="/docs/getprojectdocs"
+              component={DocumentsProject}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/docs/managedocs"
+              component={Documents}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/docs/createdoc"
+              component={NewDocument}
+            ></ProtectedRoute>
+            <ProtectedRoute
+              path="/docs/updatedocs"
+              component={DocumentUpdate}
+            ></ProtectedRoute>
             <Route
               path="/resetpassword"
               render={(props) => <ResetPassword {...props}></ResetPassword>}

@@ -4,6 +4,7 @@ import "./Projects.css";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown } from "react-bootstrap";
 import ProjectDummyData from "./ProjectDummyData";
+import CONST from "../constants";
 
 export class Projects extends Component {
   constructor(props) {
@@ -20,11 +21,12 @@ export class Projects extends Component {
   }
 
   fetchProjects(projectName) {
-    const URL =
-      "https://csci5709-group11-backend.herokuapp.com/project/getProjects";
+    const URL = CONST.URL + "project/getProjects";
+    const user_id = localStorage.getItem("userid"); 
+    
     axios
       .get(URL, {
-        params: { projectName },
+        params: { projectName, user_id },
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -65,6 +67,7 @@ export class Projects extends Component {
             <tr>
               <th>Project Name</th>
               <th>Manager</th>
+              <th>Team Name</th>
               <th>End Date</th>
             </tr>
           </thead>
@@ -74,6 +77,7 @@ export class Projects extends Component {
                 <tr>
                   <th>{data.projectName}</th>
                   <td>{data.manager || "-"}</td>
+                  <td>{data.teamName || "-"}</td>
                   <td>{new Date(data.endDate).toDateString()}</td>
                 </tr>
               );

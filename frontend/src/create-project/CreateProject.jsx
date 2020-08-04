@@ -6,6 +6,7 @@ import "./CreateProject.css";
 import DatePicker from "react-date-picker";
 import { Dropdown, Card, Modal, Button } from "react-bootstrap";
 import TeamDummyData from "./TeamDummyData";
+import CONST from "../constants";
 
 class CreateProject extends Component {
   constructor(props) {
@@ -64,8 +65,8 @@ class CreateProject extends Component {
         return;
       }
 
-      const URL =
-        "https://csci5709-group11-backend.herokuapp.com/project/createProject";
+      const URL = CONST.URL + "project/createProject";
+
       axios
         .post(
           URL,

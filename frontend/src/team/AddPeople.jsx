@@ -1,9 +1,7 @@
 /*author :Japnoor Kaur */
-
 import React, { Component } from "react";
 import axios from "axios";
 import "./AddPeople.css";
-import { Link, withRouter, Router } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import CONST from "../constants";
 
@@ -19,8 +17,8 @@ class AddPeople extends Component {
 
     var tid = this.getParam();
 
-    console.log("id team=" + tid);
-    console.log("id user=" + id);
+    // console.log("id team=" + tid);
+    //console.log("id user=" + id);
 
     var config = {
       headers: {
@@ -31,8 +29,8 @@ class AddPeople extends Component {
 
     let url = CONST.URL + "teams/deletemember/" + tid + "/" + id;
 
-    const res = axios.delete(url, config).then((res) => {
-      console.log(res);
+    axios.delete(url, config).then((res) => {
+      // console.log(res);
     });
 
     this.handleModal();
@@ -41,7 +39,7 @@ class AddPeople extends Component {
   //method to handle modal to get user know that specific task is done
   handleModal = () => {
     this.setState({ show: !this.state.show });
-    if (this.state.show == true) {
+    if (this.state.show === true) {
       window.location.reload();
     }
   };
@@ -51,10 +49,10 @@ class AddPeople extends Component {
     let pathandQuery = (
       window.location.pathname + window.location.search
     ).substr(1);
-    var arr = [];
+    //var arr = [];
     var f;
     var finalf;
-    const urlParams = new URLSearchParams(pathandQuery);
+    //const urlParams = new URLSearchParams(pathandQuery);
     f = pathandQuery.lastIndexOf;
     var arr = pathandQuery.split("/");
     for (var i = 0; i < f.length; i++) {
@@ -100,21 +98,25 @@ class AddPeople extends Component {
                 <br />
                 <br />
 
-                <table className="teamTable">
-                  <tr>
-                    <th className="teamTh">Members</th>
-                    <th className="teamTh">Delete Member</th>
-                  </tr>
-                  {this.state.users.map((user) => (
+                <table className="table table-hover">
+                  <thead className="thead-dark">
                     <tr>
-                      <th className="teamThTd">{user.userName}</th>
-                      <th className="teamThTd">
-                        <form onSubmit={this.btnDeleteMem(user.userID)}>
-                          <button className="btn btn-danger">Delete</button>
-                        </form>
-                      </th>
+                      <th className="teamTh">Members</th>
+                      <th className="teamTh">Delete Member</th>
                     </tr>
-                  ))}
+                  </thead>
+                  <tbody>
+                    {this.state.users.map((user) => (
+                      <tr key={user.userName}>
+                        <th className="teamThTd">{user.userName}</th>
+                        <th className="teamThTd">
+                          <form onSubmit={this.btnDeleteMem(user.userID)}>
+                            <button className="btn btn-danger">Delete</button>
+                          </form>
+                        </th>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
                 <br />
                 <button className="btn btn-info" type="button">
@@ -123,6 +125,10 @@ class AddPeople extends Component {
                   </a>{" "}
                 </button>
                 <br />
+                <div>
+                  <br />
+                  <a href="/teams/getteamproject"> Go to Teams </a>{" "}
+                </div>
                 <br />
                 <br />
 
@@ -134,7 +140,12 @@ class AddPeople extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                       {" "}
-                      <button onClick={this.handleModal}>Close</button>
+                      <button
+                        className="btn btn-info"
+                        onClick={this.handleModal}
+                      >
+                        Close
+                      </button>
                     </Modal.Footer>
                   </Modal>
                 </div>

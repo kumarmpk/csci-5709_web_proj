@@ -15,6 +15,12 @@ class CreateTask extends Component {
   constructor(props) {
     super(props);
 
+    let userId;
+    let userRole;
+    if (localStorage && localStorage.userid) {
+      userId = localStorage.userid;
+      userRole = localStorage.role;
+    }
     this.state = {
       projectList: [],
       project: "",
@@ -22,19 +28,14 @@ class CreateTask extends Component {
       type: "Task",
       overview: "",
       description: "",
-      creatorList: [],
+      creatorList: [{ id: "", name: "Select a User" }],
       creator: "",
       priorityList: ["Low", "Medium", "High"],
       priority: "Low",
       environment: "",
-      ownerList: [],
+      ownerList: [{ id: "", name: "Select a User" }],
       owner: "",
-      sprintList: [
-        { id: "", name: "Select a sprint" },
-        { id: 1, name: "sprint1" },
-        { id: 2, name: "sprint2" },
-        { id: 3, name: "sprint3" },
-      ],
+      sprintList: [{ id: "", name: "Select a sprint" }],
       sprint: "",
       duedate: "",
       validationErrorFlag: false,
@@ -43,11 +44,24 @@ class CreateTask extends Component {
       id: "",
       loading: false,
       modalRoute: 0,
+      userId: userId,
+      userRole: userRole,
     };
   }
 
   componentDidMount() {
     this.fetchAllDetails();
+  }
+
+  decryptFunc(input) {
+    let key = crypto.createDecipher(
+      CONST.encryption_algorithm,
+      CONST.encryption_password
+    );
+    let output = key.update(input, "hex", "utf8");
+    output += key.final("utf8");
+    output = JSON.parse(output);
+    return output;
   }
 
   async fetchAllDetails() {
@@ -61,29 +75,34 @@ class CreateTask extends Component {
     this.setState({
       loading: true,
     });
-    let url = CONST.URL + "task/user/1";
+
+    console.log(this.state);
+
+    let url =
+      CONST.URL + `task/user/${this.state.userId}/${this.state.userRole}`;
     await axios
       .get(url, config)
       .then((res) => {
-        let encryp_mess = res.data;
+        let obj = this.decryptFunc(res.data);
 
-        let dmykey = crypto.createDecipher(
-          CONST.encryption_algorithm,
-          CONST.encryption_password
-        );
-        let obj = dmykey.update(encryp_mess, "hex", "utf8");
-        obj += dmykey.final("utf8");
+        console.log("obj", obj);
 
-        obj = JSON.parse(obj);
+        if (!obj || Object.keys(obj).length === 0) {
+          this.setState({
+            loading: false,
+            modalFlag: true,
+            modalRoute: 1,
+            modalMsg: errMsg["35"],
+          });
+        }
 
         this.setState({
           projectList: obj.project,
-          ownerList: obj.user,
-          creatorList: obj.user,
           loading: false,
         });
       })
       .catch((err) => {
+        console.log("err", err);
         this.setState({
           loading: false,
           errorMsg: errMsg["11"],
@@ -104,6 +123,7 @@ class CreateTask extends Component {
       backendObj.creator = this.state.creator;
       backendObj.sprint = this.state.sprint;
       backendObj.duedate = this.state.duedate;
+      backendObj.userId = this.state.userId;
 
       const headers = {
         "content-type": "application/json",
@@ -245,11 +265,64 @@ class CreateTask extends Component {
   };
 
   handleOnChange = (e) => {
+    let name = e.target.name;
+    let value = e.target.value;
     this.setState({
-      [e.target.name]: e.target.value,
+      [name]: value,
       validationErrorFlag: false,
     });
+
+    console.log(name, value);
+
+    if (name === "project") {
+      this.getProjectSpecificDetails(value);
+    }
   };
+
+  async getProjectSpecificDetails(projectId) {
+    this.setState({
+      loading: true,
+    });
+
+    let url =
+      CONST.URL +
+      `task/${projectId}/${this.state.userId}/${this.state.userRole}`;
+
+    await axios
+      .get(url)
+      .then((res) => {
+        let obj = this.decryptFunc(res.data);
+
+        if (!obj || Object.keys(obj).length === 0) {
+          this.setState({
+            loading: false,
+            modalFlag: true,
+            modalRoute: 1,
+            modalMsg: errMsg["35"],
+          });
+        }
+
+        this.setState({
+          ownerList: obj.user,
+          creatorList: obj.user,
+          loading: false,
+        });
+
+        if (obj.sprint) {
+          this.setState({
+            sprintList: obj.sprint,
+          });
+        }
+      })
+      .catch((err) => {
+        this.setState({
+          loading: false,
+          modalRoute: 1,
+          modalMsg: errMsg["19"],
+          modalFlag: true,
+        });
+      });
+  }
 
   handleModalClose = (e) => {
     if (this.state.modalRoute === 1) {
@@ -272,7 +345,7 @@ class CreateTask extends Component {
           <section className="row ">
             <section className="container fluid">
               <section className="row justify-content-center">
-                <section className="col create-section border rounded">
+                <section className="col create-section ">
                   <main className="col-sm-12 text-center pt-1 pb-1">
                     {this.state.validationErrorFlag ? (
                       <p style={{ color: "red" }} className="errorMsg">
@@ -282,7 +355,7 @@ class CreateTask extends Component {
                     ) : null}
                   </main>
                   <section className="col-sm-12 text-center pt-2 pb-4">
-                    <h3 className="createTitle ">Create</h3>
+                    <h3 className="createTitle ">Create Task</h3>
                   </section>
                   <form className="form-container">
                     <section className="row ">
@@ -296,14 +369,15 @@ class CreateTask extends Component {
                           name="project"
                           required
                         >
-                          {this.state.projectList.map((projectOption) => (
-                            <option
-                              key={projectOption.name}
-                              value={projectOption.id}
-                            >
-                              {projectOption.name}
-                            </option>
-                          ))}
+                          {this.state.projectList &&
+                            this.state.projectList.map((projectOption) => (
+                              <option
+                                key={projectOption.name}
+                                value={projectOption.id}
+                              >
+                                {projectOption.name}
+                              </option>
+                            ))}
                         </select>
                       </section>
                       <section className="form-group col-12 col-sm-12 col-md-6">
@@ -376,7 +450,7 @@ class CreateTask extends Component {
                         </select>
                       </section>
                       <section className="form-group col-12 col-sm-12 col-md-6">
-                        <label htmlFor="owner">Owner*</label>
+                        <label htmlFor="owner">Assigned To*</label>
                         <select
                           value={this.state.owner}
                           onChange={this.handleOnChange}
@@ -385,14 +459,15 @@ class CreateTask extends Component {
                           name="owner"
                           required
                         >
-                          {this.state.ownerList.map((ownerOption) => (
-                            <option
-                              key={ownerOption.name}
-                              value={ownerOption.id}
-                            >
-                              {ownerOption.name}
-                            </option>
-                          ))}
+                          {this.state.ownerList &&
+                            this.state.ownerList.map((ownerOption) => (
+                              <option
+                                key={ownerOption.name}
+                                value={ownerOption.id}
+                              >
+                                {ownerOption.name}
+                              </option>
+                            ))}
                         </select>
                       </section>
                     </section>
@@ -411,7 +486,7 @@ class CreateTask extends Component {
                         />
                       </section>
                       <section className="form-group col-12 col-sm-12 col-md-6">
-                        <label htmlFor="creator">Creator*</label>
+                        <label htmlFor="creator">Tracked By*</label>
                         <select
                           value={this.state.creator}
                           onChange={this.handleOnChange}
@@ -420,20 +495,21 @@ class CreateTask extends Component {
                           name="creator"
                           required
                         >
-                          {this.state.creatorList.map((creatorOption) => (
-                            <option
-                              key={creatorOption.name}
-                              value={creatorOption.id}
-                            >
-                              {creatorOption.name}
-                            </option>
-                          ))}
+                          {this.state.creatorList &&
+                            this.state.creatorList.map((creatorOption) => (
+                              <option
+                                key={creatorOption.name}
+                                value={creatorOption.id}
+                              >
+                                {creatorOption.name}
+                              </option>
+                            ))}
                         </select>
                       </section>
                     </section>
                     <section className="row">
-                      <section className="form-group col-12 col-sm-12 col-md-6">
-                        <label htmlFor="sprint">Sprint Name</label>
+                      {/*<section className="form-group col-12 col-sm-12 col-md-6">
+                         <label htmlFor="sprint">Sprint Name</label>
                         <select
                           value={this.state.sprint}
                           onChange={this.handleOnChange}
@@ -451,7 +527,7 @@ class CreateTask extends Component {
                             </option>
                           ))}
                         </select>
-                      </section>
+                      </section> */}
                       <section className="form-group col-12 col-sm-12 col-md-6">
                         <label htmlFor="duedate">Due Date</label>
                         <DatePicker
@@ -470,6 +546,15 @@ class CreateTask extends Component {
                         className="btn btn-info btn-centre"
                       >
                         Create
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-info btn-centre ml-2"
+                      >
+                        <a style={{ color: "white" }} href="/home">
+                          {" "}
+                          Close
+                        </a>
                       </button>
                     </section>
                   </form>

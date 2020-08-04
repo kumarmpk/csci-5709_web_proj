@@ -1,13 +1,11 @@
 /*author :Japnoor Kaur */
 import React, { Component } from "react";
 import axios from "axios";
-import "./Team.css";
 import { Modal } from "react-bootstrap";
-import CONST from "../constants";
 
-class Team extends Component {
+class Documents extends Component {
   state = {
-    teams: [],
+    docs: [],
     show: false,
   };
 
@@ -19,7 +17,7 @@ class Team extends Component {
     //var arr = [];
     var f;
     var finalf;
-    //  const urlParams = new URLSearchParams(pathandQuery);
+    //const urlParams = new URLSearchParams(pathandQuery);
     f = pathandQuery.lastIndexOf;
     var arr = pathandQuery.split("/");
     for (var i = 0; i < f.length; i++) {
@@ -33,20 +31,11 @@ class Team extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
-    var config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    };
     const r = this.getParam();
-
-    let url = CONST.URL + "teams/manageteams/" + r;
-
-    axios.get(url, config).then((res) => {
+    axios.get("http://localhost:4000/docs/managedocs/" + r).then((res) => {
       //console.log(res);
       this.setState({
-        teams: res.data,
+        docs: res.data,
       });
     });
   }
@@ -54,17 +43,14 @@ class Team extends Component {
   //method to delete team
   btnDelete = (id) => (e) => {
     e.preventDefault();
-    var config = {
+    /* var config = {
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       },
-    };
+    };*/
 
-    let url = CONST.URL + "teams/deleteteam/" + id;
-
-    axios.delete(url, config).then((res) => {
-      //  console.log(res);
+    axios.delete("http://localhost:4000/docs/deletedoc/" + id).then((res) => {
+      // console.log(res);
     });
 
     this.handleModal();
@@ -78,7 +64,7 @@ class Team extends Component {
     }
   };
   render() {
-    // var save;
+    //var save;
     return (
       <article className="users">
         <main className="usersForm">
@@ -87,9 +73,10 @@ class Team extends Component {
               <div className="format">
                 <br />
 
-                <h3 className="message">Team Management</h3>
+                <h3>Document Management</h3>
+
                 <br />
-                <h6>Teams added for the project</h6>
+                <h6>Documents added for the project</h6>
                 <br />
                 <br />
                 <form>
@@ -97,22 +84,26 @@ class Team extends Component {
                     <table className="table table-hover">
                       <thead className="thead-dark">
                         <tr>
-                          <th className="teamTh">Teams</th>
+                          <th className="teamTh">Documents</th>
 
-                          <th className="teamTh">Edit Team</th>
-                          <th className="teamTh">Delete Team</th>
+                          <th className="teamTh">Edit Document</th>
+                          <th className="teamTh">Delete Document</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {this.state.teams.map((team) => (
-                          <tr key={team.teamName}>
-                            <th className="teamThTd">{team.teamName}</th>
+                        {this.state.docs.map((document) => (
+                          <tr key={document.documentName}>
+                            <th className="teamThTd">
+                              {document.documentName}
+                            </th>
 
                             <th className="teamThTd">
                               <button className="btn btn-info">
                                 <a
                                   className="teambutton"
-                                  href={"/teams/addmember/" + team.teamID}
+                                  href={
+                                    "/docs/updatedocs/" + document.documentID
+                                  }
                                 >
                                   Edit{" "}
                                 </a>
@@ -121,7 +112,7 @@ class Team extends Component {
                             <th className="teamThTd">
                               <button
                                 className="btn btn-danger"
-                                onClick={this.btnDelete(team.teamID)}
+                                onClick={this.btnDelete(document.documentID)}
                               >
                                 {" "}
                                 Delete{" "}
@@ -136,25 +127,28 @@ class Team extends Component {
                 <br />
                 <div className="teambutton">
                   <a
-                    href="/teams/createteam"
+                    href="/docs/createdoc"
                     className="btn btn-info"
                     style={{
                       marginTop: "1em",
                       marginBottom: "1em",
                     }}
                   >
-                    Create a new Team
+                    Create a new Document
                   </a>
+                </div>
+
+                <div>
+                  <a href="/docs/getprojectdocs"> Back to Documents </a>{" "}
                 </div>
                 <br />
                 <div>
-                  <a href="/teams/getteamproject"> Go to Teams </a>{" "}
-                </div>
-                <div>
                   <Modal centered show={this.state.show}>
-                    <Modal.Header>Team Deleted</Modal.Header>
+                    <Modal.Header>
+                      <h6>Document Deleted</h6>
+                    </Modal.Header>
                     <Modal.Body>
-                      Team has been successfully deleted!{" "}
+                      Document has been successfully deleted!{" "}
                     </Modal.Body>
                     <Modal.Footer>
                       {" "}
@@ -176,4 +170,4 @@ class Team extends Component {
   }
 }
 
-export default Team;
+export default Documents;
