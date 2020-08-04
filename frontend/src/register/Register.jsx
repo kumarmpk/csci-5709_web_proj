@@ -9,6 +9,10 @@ import CONST from "../constants";
 class Register extends Component {
   constructor(props) {
     super(props);
+
+    if (localStorage.getItem("authenticated") !== null) {
+      this.props.history.push("/create");
+    }
   }
 
   state = {

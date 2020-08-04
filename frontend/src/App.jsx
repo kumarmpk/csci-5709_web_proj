@@ -43,6 +43,7 @@ class Routes extends Component {
         "/resetpassword",
         "/about-us",
         "/contact-us",
+        "/otp",
       ],
     };
   }
@@ -93,6 +94,10 @@ class Routes extends Component {
               exact
               path="/login"
               render={(props) => <Login {...props}></Login>}
+            ></Route>
+            <Route
+              path="/otp"
+              render={(props) => <Otp {...props}></Otp>}
             ></Route>
             <ProtectedRoute path="/home" component={Home}></ProtectedRoute>
             <ProtectedRoute path="/search" component={Search}></ProtectedRoute>
