@@ -496,9 +496,9 @@ class ViewTask extends Component {
                     </section>
 
                     <form className="form-container">
-                      <text style={{ marginLeft: "0.8em", fontSize: "0.8em" }}>
+                      <p style={{ marginLeft: "0.8em", fontSize: "0.8em" }}>
                         &nbsp;Created By: {this.state.createdBy}
-                      </text>
+                      </p>
                       <section className="row ">
                         <section className="form-group col-12 col-sm-12 col-md-4">
                           <label htmlFor="projectid"> Project* </label>
@@ -752,13 +752,12 @@ class ViewTask extends Component {
                                     height="18"
                                     alt="logo"
                                   />
-                                  <text style={{ fontSize: "0.8em" }}>
+                                  <p style={{ fontSize: "0.8em" }}>
                                     &nbsp;Name: {comment.userName}
                                     <br />
-                                    {dateString}
+                                    &nbsp;{dateString}
                                     {comment.date}
-                                  </text>
-                                  <br />
+                                  </p>
                                   {comment.comment}
                                 </section>
                               );

@@ -82,6 +82,7 @@ class HomePageHeader extends Component {
           <Navbar.Toggle
             aria-controls="basic-navbar-nav"
             className="text-light font-weight-bold"
+            data-toggle="collapse"
           >
             Menu
           </Navbar.Toggle>
