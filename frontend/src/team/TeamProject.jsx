@@ -22,7 +22,7 @@ class TeamProject extends Component {
 
     var projectID = this.state.projectID;
 
-    //console.log("id=" + projectID);
+    ////console.log("id=" + projectID);
 
     var config = {
       headers: {
@@ -34,7 +34,7 @@ class TeamProject extends Component {
     let url = CONST.URL + "teams/manageteams/" + projectID;
 
     axios.get(url, config).then((res) => {
-      //console.log(res);
+      ////console.log(res);
       this.setState({
         teams: res.data,
       });
@@ -63,16 +63,16 @@ class TeamProject extends Component {
     };
 
     let uid = localStorage.userid;
-    //console.log("uid=" + uid);
+    ////console.log("uid=" + uid);
 
     let url = CONST.URL + "teams/getteamproject/" + uid;
 
     axios.get(url, config).then((res) => {
-      //  console.log(res);
+      //  //console.log(res);
       this.setState({
         projects: res.data,
       });
-      // console.log("data=" + res.data.length);
+      // //console.log("data=" + res.data.length);
       if (res.data.length === 0) {
         this.setState({ show2: !this.state.show2 });
       }

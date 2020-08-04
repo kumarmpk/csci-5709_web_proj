@@ -110,13 +110,11 @@ class Otp extends Component {
     };
 
     let url = CONST.URL + "resetpassword/otp";
-    console.log("request sent to:", url);
 
     await axios
       .post(url, { data: userData }, config)
       .then((res) => {
         if (res["status"] === 200) {
-          console.log("otp sent successful");
 
           const errors = {
             commonError: "",
@@ -167,7 +165,6 @@ class Otp extends Component {
     };
 
     let url = CONST.URL + "resetpassword/verify";
-    console.log("request sent to:", url);
 
     await axios
       .post(url, { data: userData }, config)
@@ -215,7 +212,6 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateInputs();
-    console.log(isErrorPresent);
     if (isErrorPresent == false) {
       this.resetPassword();
     }
@@ -225,7 +221,6 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateEmail();
-    console.log(isErrorPresent);
     if (isErrorPresent == false) {
       this.createOtp();
     }
@@ -235,10 +230,8 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateOtp();
-    console.log(isErrorPresent);
     if (isErrorPresent == false) {
       this.verifyOtpValue();
-      console.log("otp validation successful!");
     }
   };
 

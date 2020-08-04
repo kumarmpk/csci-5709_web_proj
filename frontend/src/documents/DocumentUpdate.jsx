@@ -46,7 +46,6 @@ class DocumentUpdate extends Component {
       let url = CONST.URL + "docs/updatedocs/" + docID;
 
       axios.put(url, userData, config).then((res) => {
-        // console.log(res);
       });
 
       this.setState(initialState);
@@ -142,28 +141,11 @@ class DocumentUpdate extends Component {
     let url = CONST.URL + "docs/updatedocs/" + r;
 
     axios.get(url, config).then((res) => {
-      // console.log(res);
       this.setState({
         docs: res.data,
         docText: res.data.documentText,
       });
-      /*
-      {this.state.docs.map((doc) => (
-
-        docText: {doc.documentText}
-        ))};
-        */
     });
-
-    /*  this.state.docs.map(
-      (doc) => {
-        console.log("before documentText=" + doc.documentText);
-      }
-      // persons.set(0, `${doc.documentText}`)
-    );
-
-    console.log("documentName and documentText=" + persons.get(0));
-    */
   }
   render() {
     return (

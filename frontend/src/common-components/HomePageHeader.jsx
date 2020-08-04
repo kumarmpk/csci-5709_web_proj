@@ -16,13 +16,10 @@ class HomePageHeader extends Component {
 
   handleUser = () => {
     this.setState({ show: !this.state.show });
-    console.log("state=" + this.state.show);
   };
 
   componentDidMount() {
     let uRole = localStorage.role;
-    console.log("uRole=" + uRole);
-    console.log("state before=" + this.state.show);
 
     if (uRole === "admin" || uRole === "manager") {
       this.handleUser();

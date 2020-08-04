@@ -56,8 +56,6 @@ class Routes extends Component {
   }
 
   render() {
-    // console.log("hist", this.props.history.location.pathname);
-    // console.log("con:", this.state.SideBarPath.includes(this.props.history.location.pathname));
 
     const { SideBarPath } = this.state;
     const {

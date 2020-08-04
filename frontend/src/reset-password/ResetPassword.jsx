@@ -113,7 +113,6 @@ class ResetPassword extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateInputs();
-    console.log(isErrorPresent);
     if (isErrorPresent == false) {
       this.resetPassword();
     }

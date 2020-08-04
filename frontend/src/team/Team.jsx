@@ -44,7 +44,7 @@ class Team extends Component {
     let url = CONST.URL + "teams/manageteams/" + r;
 
     axios.get(url, config).then((res) => {
-      //console.log(res);
+      ////console.log(res);
       this.setState({
         teams: res.data,
       });
@@ -64,7 +64,7 @@ class Team extends Component {
     let url = CONST.URL + "teams/deleteteam/" + id;
 
     axios.delete(url, config).then((res) => {
-      //  console.log(res);
+      //  //console.log(res);
     });
 
     this.handleModal();

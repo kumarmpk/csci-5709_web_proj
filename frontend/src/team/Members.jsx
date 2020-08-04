@@ -29,7 +29,7 @@ class Members extends Component {
     let url = CONST.URL + "teams/addtoteam";
 
     axios.post(url, userData, config).then((res) => {
-      // console.log(res);
+      // //console.log(res);
     });
     this.handleModal();
   };
@@ -62,7 +62,7 @@ class Members extends Component {
     let url = CONST.URL + "teams/addtoteam";
 
     axios.get(url, config).then((res) => {
-      //  console.log(res);
+      //  //console.log(res);
       this.setState({
         users: res.data,
       });

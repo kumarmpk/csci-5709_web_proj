@@ -96,14 +96,11 @@ class Register extends Component {
       password: this.state.password,
     };
 
-    console.log(userData);
-
     let url = CONST.URL + "register";
 
     const res = await axios.post(url, { data: userData }, config);
 
     this.props.history.push("/login");
-    console.log(res);
   };
 
   btnClick = (e) => {

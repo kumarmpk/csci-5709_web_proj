@@ -33,11 +33,9 @@ export class Projects extends Component {
         },
       })
       .then((res) => {
-        console.log(res.data);
         this.setState({ filteredProjects: res.data });
       })
       .catch(({ response }) => {
-        console.log(response);
       });
   }
 
@@ -103,7 +101,6 @@ export class Projects extends Component {
   };
   onSearchOptionSelect = (e) => {
     this.setState(() => ({ searchOption: e }));
-    console.log("sate:", this.state.searchOption);
   };
   setDropDownName = () => {
     if (this.state.searchOption === "pname") {

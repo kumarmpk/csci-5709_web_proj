@@ -43,7 +43,6 @@ class Documents extends Component {
     let url = CONST.URL + "docs/managedocs/" + r;
 
     axios.get(url, config).then((res) => {
-      //console.log(res);
       this.setState({
         docs: res.data,
       });
@@ -68,7 +67,6 @@ class Documents extends Component {
     let url = CONST.URL + "docs/deletedoc/" + id;
 
     axios.delete(url, config).then((res) => {
-      // console.log(res);
     });
 
     this.handleModal();

@@ -42,7 +42,7 @@ class NewTeam extends Component {
       let url = CONST.URL + "teams/createteam";
 
       axios.post(url, userData, config).then((res) => {
-        console.log(res);
+        //console.log(res);
       });
 
       this.setState(initialState);

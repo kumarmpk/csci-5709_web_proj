@@ -42,7 +42,6 @@ class NewDocument extends Component {
       let url = CONST.URL + "docs/createdoc";
 
       axios.post(url, userData, config).then((res) => {
-        console.log(res);
       });
 
       this.setState(initialState);

@@ -32,8 +32,6 @@ class DocumentUpdate extends Component {
   handleUpdate = (event) => {
     event.preventDefault();
 
-    console.log("entered update");
-
     const isValid = this.validate(event);
     if (isValid) {
       var config = {
@@ -51,7 +49,6 @@ class DocumentUpdate extends Component {
       axios
         .put("http://localhost:4000/docs/updatedocs/" + docID, userData, config)
         .then((res) => {
-          console.log(res);
         });
 
       this.setState(initialState);
@@ -69,14 +66,12 @@ class DocumentUpdate extends Component {
   handleDelete = (e) => {
     e.preventDefault();
 
-    console.log("entered delete");
 
     const docID = this.getParam();
 
     axios
       .delete("http://localhost:4000/docs/deletedoc/" + docID)
       .then((res) => {
-        console.log(res);
         this.setState({
           modalMsg: "Document has been successfully deleted.",
           show: true,
@@ -159,28 +154,12 @@ class DocumentUpdate extends Component {
     const r = this.getParam();
 
     axios.get("http://localhost:4000/docs/updatedocs/" + r).then((res) => {
-      console.log(res);
       this.setState({
         docs: res.data,
         docText: res.data.documentText,
       });
-      /*
-      {this.state.docs.map((doc) => (
-
-        docText: {doc.documentText}
-        ))};
-        */
     });
 
-    /*  this.state.docs.map(
-      (doc) => {
-        console.log("before documentText=" + doc.documentText);
-      }
-      // persons.set(0, `${doc.documentText}`)
-    );
-
-    console.log("documentName and documentText=" + persons.get(0));
-    */
   }
   render() {
     return (

@@ -3,7 +3,7 @@ export async function register() {
     try {
       await navigator.serviceWorker.register('./service-worker.js');
     } catch (e) {
-      console.log(`SW registration failed`, e);
+      //console.log(`SW registration failed`, e);
     }
   }
 }
