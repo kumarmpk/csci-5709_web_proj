@@ -17,8 +17,8 @@ class AddPeople extends Component {
 
     var tid = this.getParam();
 
-    // console.log("id team=" + tid);
-    //console.log("id user=" + id);
+    // //console.log("id team=" + tid);
+    ////console.log("id user=" + id);
 
     var config = {
       headers: {
@@ -30,7 +30,7 @@ class AddPeople extends Component {
     let url = CONST.URL + "teams/deletemember/" + tid + "/" + id;
 
     axios.delete(url, config).then((res) => {
-      // console.log(res);
+      // //console.log(res);
     });
 
     this.handleModal();

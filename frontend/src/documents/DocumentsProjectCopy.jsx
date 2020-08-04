@@ -23,11 +23,9 @@ class DocumentsProject extends Component {
 
     var projectID = this.state.projectID;
 
-    console.log("id=" + projectID);
     const res = axios
       .get("http://localhost:4000/docs/managedocs/" + projectID)
       .then((res) => {
-        //console.log(res);
         this.setState({
           docs: res.data,
         });
@@ -49,11 +47,9 @@ class DocumentsProject extends Component {
   //it will be executed after the whole page is loaded
   componentDidMount() {
     let uId = localStorage.userid;
-    console.log("uid=" + uId);
     axios
       .get("http://localhost:4000/docs/getAllProjDocs/" + uId)
       .then((res) => {
-        console.log(res);
         this.setState({
           projects: res.data,
         });

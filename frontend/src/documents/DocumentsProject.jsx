@@ -31,10 +31,7 @@ class DocumentsProject extends Component {
     };
     var projectID = this.state.projectID;
     let url = CONST.URL + "docs/managedocs/" + projectID;
-
-    // console.log("id=" + projectID);
     axios.get(url, config).then((res) => {
-      //console.log(res);
       this.setState({
         docs: res.data,
       });
@@ -43,7 +40,6 @@ class DocumentsProject extends Component {
   //method to set projectID parameter
   setVarVal = (e) => {
     value = this.state.projectID;
-    // console.log("id=" + value);
   };
 
   goBackClick = (e) => {
@@ -67,13 +63,10 @@ class DocumentsProject extends Component {
 
     let url = CONST.URL + "docs/getprojectdocs/" + uid;
 
-    //console.log("uid=" + uid);
     axios.get(url, config).then((res) => {
-      //console.log(res);
       this.setState({
         projects: res.data,
       });
-      // console.log("data=" + res.data.length);
       if (res.data.length === 0) {
         this.setState({ show2: !this.state.show2 });
       }

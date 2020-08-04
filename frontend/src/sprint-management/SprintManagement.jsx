@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
+import Cont from "../constants"
 
 import "./SprintManagement.css";
 import axios from "axios";
@@ -16,7 +17,6 @@ import { Sprints, Tasks } from './Sprints'
 class SprintManagement extends Component {
   constructor(props) {
     super(props);
-    console.log(props)
     this.state = {
       projectID: Number(props.match.params.projectID),
       Sprints: [],
@@ -30,7 +30,7 @@ class SprintManagement extends Component {
       editSprintModalFlag: false,
       editActiveSprintModalFlag: false,
       errorMsg: "",
-      serverURL: "http://localhost:4000/sprint/",
+      serverURL: Cont.URL+"sprint/",
       corsHeader: {
         headers: {
           "Content-Type": "application/json",
@@ -44,17 +44,9 @@ class SprintManagement extends Component {
       editSprintEndDate: "",
       editSprintIDModelSelected: null,
     };
-    console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC", this.state.Sprints[0]);
   }
 
   componentWillMount() {
-    // URL = "http://localhost:4000/sprint/";
-    // var config = {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Access-Control-Allow-Origin": "*",
-    //   },
-    // };
     axios
       .post(
         this.state.serverURL + "getSprint",
@@ -62,11 +54,9 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("________________________", response.data["data"]);
         this.setState({
           Sprints: response.data["data"],
         });
-        console.log("res: ", response.data["data"]);
 
         axios
           .post(
@@ -78,18 +68,15 @@ class SprintManagement extends Component {
             this.setState({
               Tasks: response.data["data"],
             });
-            console.log("resTask: ", response.data["data"]);
           })
           .then(this.setActiveSprintData)
           .catch((error) => {
-            console.log("error2", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -103,7 +90,6 @@ class SprintManagement extends Component {
 
   //set Active sprint data
   setActiveSprintData = () => {
-      console.log("datdtadtadtatda@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ", this.state.Sprints);
     if (this.state.Sprints[0]) {
       let minOrder = this.state.Sprints[0]["order"];
       let change = false;
@@ -129,17 +115,13 @@ class SprintManagement extends Component {
       this.setState({
         ...newData,
       });
-      console.log("ACT", this.state["ActiveSprintID"]);
-      console.log("ACT", this.state["MinOrder"]);
     }
   };
 
   //delete sprint
   handleDeleteSprintModalConfirm = (e) => {
-    console.log("Sprint Deleted");
     let stemp = []
     let ttemp = []
-    console.log(e.target);
     axios
       .post(
         this.state.serverURL + "delete",
@@ -150,7 +132,6 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("res del1", response);
         //fetch sprint
        return axios
           .post(
@@ -160,15 +141,8 @@ class SprintManagement extends Component {
           )
       })
       .then((response1) => {
-            console.log("spr", response1.data["data"]);
             
             stemp = response1.data["data"];
-            // this.setState(
-            //   {
-            //     Sprints: response.data["data"],
-            //   },
-            //   () => this.setActiveSprintData()
-            // );
 
             //fetch task
             return axios
@@ -180,28 +154,8 @@ class SprintManagement extends Component {
           })
           .then((response2) => {
                   ttemp = response2.data["data"];
-                // this.setState({
-                //   Tasks: response2.data["data"],
-                // });
-                console.log("resTask: ", response2.data["data"]);
               })
-    //         //   .then(this.setActiveSprintData)
-    //           .catch((error) => {
-    //             console.log("error2", error.response.data.msg);
-    //             this.setState({
-    //               errorMsg: error.response.data.msg,
-    //             });
-    //           });
-    //       .catch((error1) => {
-    //         console.log("sprintsprntEEEEEEEEEEEEEEEEE", this.state.Sprints);
-    //         console.log("rrrrrrrrrrrrrrrrrrrrrrrrrr", error1);
-    //         this.setState({
-    //           errorMsg: error1.response.data.msg,
-    //         });
-    //       });
-    // //   .then(this.setActiveSprintData)
       .catch((error2) => {
-        console.log("error1", error2);
         this.setState({
           errorMsg: error2.response.data.msg,
         });
@@ -218,8 +172,6 @@ class SprintManagement extends Component {
             deleteSprintModalFlag: false,
           }, () => this.setActiveSprintData()))
       );
-      
-    console.log("sprint deleted: ",this.state);
   };
 
   handleDeleteSprintModalOpen = (sprintID) => {
@@ -237,7 +189,6 @@ class SprintManagement extends Component {
 
   //Edit
   handleEditSprintModalUpdate = () => {
-    console.log("Sprint Edited");
 
     axios
       .put(
@@ -251,7 +202,6 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("________________________", response.data["data"]);
         //get new sprint data
         axios
           .post(
@@ -260,20 +210,19 @@ class SprintManagement extends Component {
             this.state.corsHeader
           )
           .then((response) => {
-            console.log("spr", response.data["data"]);
             this.setState({
               Sprints: response.data["data"],
             });
           })
           .catch((error) => {
-            // console.log("error2", error.response.data.msg);
+            // //console.log("error2", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error1", error.response.data.msg);
+        //console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -286,7 +235,7 @@ class SprintManagement extends Component {
   };
 
   handleEditSprintModalOpen = (sprintID) => {
-    console.log("id", sprintID);
+    //console.log("id", sprintID);
     this.setState({
       // temp_s:
       editSprintName: this.state.Sprints.find(
@@ -305,7 +254,7 @@ class SprintManagement extends Component {
       editSprintName: e.target.value,
     });
 
-    console.log("Naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.editSprintName);
+    //console.log("Naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", this.editSprintName);
   };
 
   setEditSprintDescModal = (e) => {
@@ -322,7 +271,7 @@ class SprintManagement extends Component {
 
   //Edit Active
   handleEditActiveSprintModalUpdate = () => {
-    console.log("Active Sprint Edited");
+    //console.log("Active Sprint Edited");
 
     axios
       .put(
@@ -338,7 +287,7 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("________________________", response.data["data"]);
+        //console.log("________________________", response.data["data"]);
         //get new sprint data
         axios
           .post(
@@ -347,20 +296,20 @@ class SprintManagement extends Component {
             this.state.corsHeader
           )
           .then((response) => {
-            console.log("spr", response.data["data"]);
+            //console.log("spr", response.data["data"]);
             this.setState({
               Sprints: response.data["data"],
             });
           })
           .catch((error) => {
-            // console.log("error2", error.response.data.msg);
+            // //console.log("error2", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error1", error.response.data.msg);
+        //console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -411,7 +360,7 @@ class SprintManagement extends Component {
 
   //Start Sprint
   handleStartSprintModalStart = () => {
-    console.log("Active Sprint Edited", this.state.editSprintIDModelSelected);
+    //console.log("Active Sprint Edited", this.state.editSprintIDModelSelected);
 
     axios
       .post(
@@ -428,7 +377,7 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("________________________", response.data["data"]);
+        //console.log("________________________", response.data["data"]);
         //get new sprint data
         axios
           .post(
@@ -437,21 +386,21 @@ class SprintManagement extends Component {
             this.state.corsHeader
           )
           .then((response) => {
-            console.log("spr", response.data["data"]);
+            //console.log("spr", response.data["data"]);
             this.setState({
               Sprints: response.data["data"],
             });
           })
           .then(this.setActiveSprintData)
           .catch((error) => {
-            // console.log("error2", error.response.data.msg);
+            // //console.log("error2", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error1", error.response.data.msg);
+        //console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -493,7 +442,7 @@ class SprintManagement extends Component {
 
   //create modal
   handleCreateSprintModalCreate = (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     axios
       .post(
         this.state.serverURL + "create",
@@ -508,21 +457,21 @@ class SprintManagement extends Component {
             this.state.corsHeader
           )
           .then((response) => {
-            console.log("spr", response.data["data"]);
+            //console.log("spr", response.data["data"]);
             this.setState({
               Sprints: response.data["data"],
             });
           })
           .then(this.setActiveSprintData)
           .catch((error) => {
-            // console.log("error2", error.response.data.msg);
+            // //console.log("error2", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        // console.log("error1", error);
+        // //console.log("error1", error);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -554,7 +503,7 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("res del1", response);
+        //console.log("res del1", response);
         //fetch sprint
         axios
           .post(
@@ -563,7 +512,7 @@ class SprintManagement extends Component {
             this.state.corsHeader
           )
           .then((response) => {
-            console.log("spr", response.data["data"]);
+            //console.log("spr", response.data["data"]);
             this.setState({
               Sprints: response.data["data"],
             });
@@ -578,25 +527,25 @@ class SprintManagement extends Component {
                 this.setState({
                   Tasks: response.data["data"],
                 });
-                console.log("resTask: ", response.data["data"]);
+                //console.log("resTask: ", response.data["data"]);
               })
               .then(this.setActiveSprintData)
               .catch((error) => {
-                console.log("error2", error.response.data.msg);
+                //console.log("error2", error.response.data.msg);
                 this.setState({
                   errorMsg: error.response.data.msg,
                 });
               });
           })
           .catch((error) => {
-            console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", error.response);
+            //console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%", error.response);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error1", error);
+        //console.log("error1", error);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -620,13 +569,13 @@ class SprintManagement extends Component {
   };
 
   onDragStart = (ev, id) => {
-    console.log("dragstart: ", id);
+    //console.log("dragstart: ", id);
     ev.dataTransfer.setData("taskid", id);
   };
 
   onDrop = (ev, sprintid) => {
     let taskid = Number(ev.dataTransfer.getData("taskid"));
-    console.log("Drop: ", taskid);
+    //console.log("Drop: ", taskid);
     axios
       .put(
         this.state.serverURL + "modifyTaskSprint",
@@ -638,7 +587,7 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("resTask: ", response.data["data"]);
+        //console.log("resTask: ", response.data["data"]);
         //get new tasks details
         axios
           .post(
@@ -650,18 +599,18 @@ class SprintManagement extends Component {
             this.setState({
               Tasks: response.data["data"],
             });
-            console.log("resTask: ", response.data["data"]);
+            //console.log("resTask: ", response.data["data"]);
           })
           .then(this.setActiveSprintData)
           .catch((error) => {
-            console.log("error_fetch_task_modify", error.response.data.msg);
+            //console.log("error_fetch_task_modify", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error_modify_sprint_task", error.response.data.msg);
+        //console.log("error_modify_sprint_task", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -670,7 +619,7 @@ class SprintManagement extends Component {
 
   onDropActive = (ev, actSprintId, status) => {
     let taskid = Number(ev.dataTransfer.getData("taskid"));
-    console.log("Drop: ", taskid);
+    //console.log("Drop: ", taskid);
     // let tasks = this.state.Tasks.filter((task) => {
     //   if (task.taskid == taskid) {
     //     task.sprintid = actSprintId;
@@ -690,7 +639,7 @@ class SprintManagement extends Component {
         this.state.corsHeader
       )
       .then((response) => {
-        console.log("resTask: ", response.data["data"]);
+        //console.log("resTask: ", response.data["data"]);
         //get new tasks details
         axios
           .put(
@@ -704,7 +653,7 @@ class SprintManagement extends Component {
             this.state.corsHeader
           )
           .then((response) => {
-            console.log("resTask: ", response.data["data"]);
+            //console.log("resTask: ", response.data["data"]);
             //get new tasks details
             axios
               .post(
@@ -716,30 +665,30 @@ class SprintManagement extends Component {
                 this.setState({
                   Tasks: response.data["data"],
                 });
-                console.log("resTask: ", response.data["data"]);
+                //console.log("resTask: ", response.data["data"]);
               })
               .then(this.setActiveSprintData)
               .catch((error) => {
-                console.log("error_fetch_task_modify", error.response.data.msg);
+                //console.log("error_fetch_task_modify", error.response.data.msg);
                 this.setState({
                   errorMsg: error.response.data.msg,
                 });
               });
           })
           .catch((error) => {
-            console.log("error_modify_status_task", error.response.data.msg);
+            //console.log("error_modify_status_task", error.response.data.msg);
             this.setState({
               errorMsg: error.response.data.msg,
             });
           });
       })
       .catch((error) => {
-        console.log("error_modify_sprint_task", error.response.data.msg);
+        //console.log("error_modify_sprint_task", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
       });
-    console.log("latest: ", this.state.Tasks);
+    //console.log("latest: ", this.state.Tasks);
   };
 
   render() {
@@ -749,7 +698,7 @@ class SprintManagement extends Component {
     if (this.state.loading) {
       return <section>Fetching Data</section>;
     }
-    console.log(
+    //console.log(
       "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
       this.state.ActiveSprintAvailable
     );
@@ -759,7 +708,7 @@ class SprintManagement extends Component {
           <section className="row mt-4 mx-4">
             <section className="col-12">
               <section className="sprint border rounded p-2">
-                {console.log(
+                {//console.log(
                   "latest$$$$$$$$$$$$$$$$$$$$$ ",
                   this.state.ActiveSprintAvailable
                 )}
@@ -909,7 +858,7 @@ class SprintManagement extends Component {
                   >
                     Edit
                   </button>
-                  {console.log(
+                  {//console.log(
                     "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  " +
                       this.state.MinOrder +
                       "    " +
@@ -1187,7 +1136,7 @@ class SprintManagement extends Component {
         </Modal>
 
         <Modal show={this.state.startSprintModalFlag} centered>
-          {console.log(
+          {//console.log(
             "##################################",
             this.state.MinOrder
           )}

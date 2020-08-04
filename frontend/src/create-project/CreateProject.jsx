@@ -37,7 +37,6 @@ class CreateProject extends Component {
   handleCreate = (e) => {
     const { history } = this.props;
     e.preventDefault();
-    console.log("selected:", this.state.selectedTeam);
 
     this.setState({
       validationErrorFlag: false,
@@ -84,11 +83,9 @@ class CreateProject extends Component {
           }
         )
         .then((res) => {
-          console.log(res.data);
           history.push("/home");
         })
         .catch(({ response }) => {
-          console.log(response);
         });
     } else {
       //form error is set here
