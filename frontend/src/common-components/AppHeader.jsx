@@ -5,6 +5,15 @@ import { Navbar, Nav } from "react-bootstrap";
 import "../common-css/styles.css";
 
 class AppHeader extends Component {
+  constructor(props) {
+    super(props);
+    var { isVisible } = props;
+    this.state = {
+      search: "",
+      isVisible: isVisible,
+    };
+  }
+
   render() {
     return (
       <section>
@@ -13,7 +22,11 @@ class AppHeader extends Component {
           <Navbar.Brand href="/">
             <img className="logoimage" src={logoimage} alt="logo" />
           </Navbar.Brand>
-          <Nav style={{ marginRight: 0, marginLeft: "auto" }} id="login-button">
+          <Nav
+            hidden={!this.state.isVisible}
+            style={{ marginRight: 0, marginLeft: "auto" }}
+            id="login-button"
+          >
             <Nav.Link className="text-light font-weight-bold" href="/login">
               Login
             </Nav.Link>

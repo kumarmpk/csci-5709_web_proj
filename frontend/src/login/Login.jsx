@@ -12,7 +12,7 @@ class Login extends Component {
     super(props);
 
     if (localStorage.getItem("authenticated") !== null) {
-      this.props.history.push("/create");
+      this.props.history.push("/home");
     }
   }
 
@@ -78,7 +78,7 @@ class Login extends Component {
           }
 
           auth.login(() => {
-            this.props.history.push("/create");
+            this.props.history.push("/home");
           });
         }
       })
