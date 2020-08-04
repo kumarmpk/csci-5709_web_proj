@@ -15,11 +15,11 @@ let query = "use " + config.mySQLConfig.database;
 
 connect.connect(function (error) {
   if (error) {
-    throw error;
+    console.log("Error ", error);
   }
   connect.query(query, function (error, result) {
     if (error) {
-      throw error;
+      console.log("Error ", error);
     }
     console.log("DB is connected !");
   });
@@ -32,7 +32,7 @@ exports.getAllDocuments = (req, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json(result);
     console.log("get all documents executed");
@@ -45,7 +45,7 @@ exports.getDocumentContent = (req, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     res.status(200).json(result);
     console.log("get document's context executed");
@@ -58,13 +58,13 @@ exports.addNewDoc = (userData, userData2, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     let sql2 = `Select documentID from Document where documentName= '${userData}'; `;
     let sqlquery2 = connect.query(sql2, (err, result) => {
       if (err) {
         console.log("error occured");
-        throw err;
+        console.log("Error ", err);
       }
 
       var string = JSON.stringify(result);
@@ -74,7 +74,7 @@ exports.addNewDoc = (userData, userData2, res) => {
       let sqlquery3 = connect.query(sql3, (err, result) => {
         if (err) {
           console.log("error occured");
-          throw err;
+          console.log("Error ", err);
         }
 
         console.log("Document created successfully");
@@ -89,7 +89,7 @@ exports.updateDocContent = (userData, userData2, docParam, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
 
     console.log("Document updated successfully");
@@ -103,7 +103,7 @@ exports.deleteDoc = (req, res) => {
   let sqlquery = connect.query(sql, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
   });
   let sql2 = `Delete from Document where documentID='${req.params.id}';`;
@@ -111,7 +111,7 @@ exports.deleteDoc = (req, res) => {
   let sqlquery2 = connect.query(sql2, (err, result) => {
     if (err) {
       console.log("error occured");
-      throw err;
+      console.log("Error ", err);
     }
     return res.status(200).send("Document Deleted successfully");
   });
@@ -127,7 +127,7 @@ exports.getAllProjects = (req, res) => {
     let sqlquery = connect.query(sql, (err, result) => {
       if (err) {
         console.log("error occured");
-        throw err;
+        console.log("Error ", err);
       }
       res.status(200).json(result);
       console.log("get all projects executed for admin");
@@ -138,7 +138,7 @@ exports.getAllProjects = (req, res) => {
     let sqlquery = connect.query(sql, (err, result) => {
       if (err) {
         console.log("error occured");
-        throw err;
+        console.log("Error ", err);
       }
       res.status(200).json(result);
 
