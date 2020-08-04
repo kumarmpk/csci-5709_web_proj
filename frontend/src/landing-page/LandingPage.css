@@ -15,7 +15,7 @@
 
 .sprintImage {
   height: 15em;
-  width: 50%;
+  width: 100%;
   background: linear-gradient(to bottom, #00d4ff 0%, #86bf04 100%);
   transform: scale(1);
   transition: transform 0.5s ease;
@@ -31,10 +31,9 @@
   cursor: default;
 }
 
-
 .documentsImage {
   height: 18em;
-  width: 50%;
+  width: 100%;
   background: linear-gradient(to bottom, #00d4ff 0%, #86bf04 100%);
   transform: scale(1);
   transition: transform 0.5s ease;
@@ -50,20 +49,20 @@
 }
 
 .landingPageSummaryFirst {
-  margin-left: 4em;
+  margin-left: 2em;
   padding-top: 3em;
   cursor: auto;
 }
 
 .landingPageSummary {
-  margin-left: 4em;
-  padding-top: 15em;
+  margin-left: 2em;
+  padding-top: 3em;
   cursor: auto;
 }
 
 .landingPageSummary2 {
-  margin-left: 4em;
-  padding-top: 5em;
+  margin-left: 2em;
+  padding-top: 1.5em;
   cursor: auto;
 }
 
@@ -81,13 +80,13 @@
 }
 
 .landingPageSummaryHead2 {
+  padding-top: 1.5em;
   font-family: FiraSans;
   color: indigo;
-  padding-top: 3em;
 }
 
 .landingPageSummaryBody {
-  margin-left: 3em;
+  margin-left: 2em;
 }
 
 .aside {
@@ -108,7 +107,7 @@
 
 .landingPageSummaryLast {
   width: 45%;
-  margin-left: 4em;
+  margin-left: 2em;
   padding-top: 2em;
   margin-bottom: 4em;
   padding-bottom: 2em;
@@ -120,7 +119,7 @@
   width: 100%;
 }
 
-.row{
-    /* padding: 0vh 10vw 0vh 10vw !important; */
-    margin: 0vh 0vw 0vh 0vw !important;
+.row {
+  /* padding: 0vh 10vw 0vh 10vw !important; */
+  margin: 0vh 0vw 0vh 0vw !important;
 }

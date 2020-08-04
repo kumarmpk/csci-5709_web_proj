@@ -1,16 +1,8 @@
 /*author :Japnoor Kaur */
-
 import React, { Component } from "react";
 import axios from "axios";
 import "./AddPeople.css";
-import { Modal } from "react-bootstrap";
-import {
-  Link,
-  withRouter,
-  Route,
-  useLocation,
-  useHistory,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import CONST from "../constants";
 
@@ -22,6 +14,7 @@ class TeamProject extends Component {
     projectName: "",
     projectID: "",
     show: false,
+    show2: true,
   };
   //method to get teams for the project
   btnClick = (e) => {
@@ -29,7 +22,7 @@ class TeamProject extends Component {
 
     var projectID = this.state.projectID;
 
-    console.log("id=" + projectID);
+    //console.log("id=" + projectID);
 
     var config = {
       headers: {
@@ -40,7 +33,7 @@ class TeamProject extends Component {
 
     let url = CONST.URL + "teams/manageteams/" + projectID;
 
-    const res = axios.get(url, config).then((res) => {
+    axios.get(url, config).then((res) => {
       //console.log(res);
       this.setState({
         teams: res.data,
@@ -69,18 +62,24 @@ class TeamProject extends Component {
       },
     };
 
-    let url = CONST.URL + "teams/getteamproject";
+    let uid = localStorage.userid;
+    //console.log("uid=" + uid);
+
+    let url = CONST.URL + "teams/getteamproject/" + uid;
 
     axios.get(url, config).then((res) => {
-      console.log(res);
+      //  console.log(res);
       this.setState({
         projects: res.data,
       });
+      // console.log("data=" + res.data.length);
+      if (res.data.length === 0) {
+        this.setState({ show2: !this.state.show2 });
+      }
     });
   }
 
   render() {
-    var v;
     return (
       <article className="users">
         <main className="usersForm">
@@ -88,55 +87,64 @@ class TeamProject extends Component {
             <div className="col-12 col-sm-8 col-md-11 col-lg-10 border rounded">
               <div className="format">
                 <br />
-                <h3 className="message">Team Management</h3>
+                <h3>Team Management</h3>
                 <form onSubmit={this.btnClick}>
                   <br />
-                  <label className="textformat" for="people">
-                    Choose a project for team details:
-                  </label>
+                  <table className="table">
+                    <thead className="thead-dark">
+                      <tr>
+                        <th className="teamTh">
+                          Projects (Choose a project to see teams)
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="format" style={{ paddingLeft: "25%" }}>
+                        <td style={{ paddingLeft: "25%" }}>
+                          <select
+                            className="form-control"
+                            style={{ width: "70%" }}
+                            value={this.state.projectID}
+                            onChange={(e) =>
+                              this.setState({
+                                projectName: e.target.value,
+                                projectID: e.target.value,
+                              })
+                            }
+                          >
+                            <option className="teamDropdown" disabled value="">
+                              Select a project
+                            </option>
+                            {this.state.projects.map((project) => (
+                              <option
+                                value={project.projectID}
+                                key={project.projectID}
+                              >
+                                {project.projectName}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                   <br />
                   <br />
-                  <select
-                    className="teamDropdown"
-                    value={this.state.projectID}
-                    onChange={(e) =>
-                      this.setState({
-                        projectName: e.target.value,
-                        projectID: e.target.value,
-                      })
-                    }
-                  >
-                    <option
-                      className="teamDropdown"
-                      class="placeholder"
-                      selected
-                      disabled
-                      value=""
+                  <br />
+                  {this.state.show2 && (
+                    <button
+                      className="btn btn-info"
+                      type="submit"
+                      onClick={this.setVarVal()}
                     >
-                      Select a project
-                    </option>
-                    {this.state.projects.map((project) => (
-                      <option value={project.projectID}>
-                        {project.projectName}
-                      </option>
-                    ))}
-                  </select>{" "}
-                  <br />
-                  <br />
-                  <br />
-                  <br />
-                  <button
-                    className="btn btn-info"
-                    type="submit"
-                    onClick={this.setVarVal()}
-                  >
-                    <Link
-                      className="teambutton"
-                      to={"/teams/manageteams/" + value}
-                    >
-                      See teams{" "}
-                    </Link>{" "}
-                  </button>
+                      <Link
+                        className="teambutton"
+                        to={"/teams/manageteams/" + value}
+                      >
+                        See teams{" "}
+                      </Link>{" "}
+                    </button>
+                  )}
                 </form>
                 <br />
 

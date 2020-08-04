@@ -5,6 +5,7 @@ import React, { Component } from "react";
 import "./Login.css";
 import axios from "axios";
 import auth from "../auth";
+import CONST from "../constants";
 
 class Login extends Component {
   state = {
@@ -57,15 +58,16 @@ class Login extends Component {
       password: this.state.password,
     };
 
+    let url = CONST.URL + "login";
+
     await axios
-      .post(
-        "https://csci5709-group11-backend.herokuapp.com/login",
-        { data: userData },
-        config
-      )
+      .post(url, { data: userData }, config)
       .then((res) => {
         if (res["status"] === 200) {
-          console.log("inner userdata", userData);
+          if (typeof Storage !== "undefined") {
+            localStorage.setItem("userid", res["data"]["userid"]);
+            localStorage.setItem("role", res["data"]["role"]);
+          }
 
           auth.login(() => {
             this.props.history.push("/create");
@@ -114,7 +116,7 @@ class Login extends Component {
                         value={this.state.email}
                         onChange={(e) => this.updateValues(e)}
                         type="email"
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter email address"
                       ></input>
                       <p align="left" style={{ color: "red" }}>
@@ -129,7 +131,7 @@ class Login extends Component {
                         value={this.state.password}
                         onChange={(e) => this.updateValues(e)}
                         type="password"
-                        class="form-control"
+                        className="form-control"
                         placeholder="Enter password"
                       ></input>
                       <p align="left" style={{ color: "red" }}>
@@ -141,7 +143,7 @@ class Login extends Component {
                       <button
                         type="submit"
                         onClick={this.btnClick}
-                        class="btn btn-primary"
+                        className="btn btn-primary"
                         style={{ background: "#2888d1" }}
                       >
                         Log in
@@ -153,7 +155,7 @@ class Login extends Component {
                       </p>
                       <p className="register text-left">
                         Don't have account?
-                        <a href="/register">Register</a>
+                        <a href="/register"> Register</a>
                       </p>
                     </div>
                   </form>

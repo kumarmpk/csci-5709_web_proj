@@ -1,7 +1,29 @@
 import React from "react";
 import "../common-css/Sidebar.css";
 
+const initialState = {
+  show: false,
+};
+
 export default class Sidebar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = initialState;
+  }
+  handleUser = () => {
+    this.setState({ show: !this.state.show });
+    //console.log("state=" + this.state.show);
+  };
+  componentDidMount() {
+    let uRole = localStorage.role;
+    // console.log("uRole=" + uRole);
+    //console.log("state before=" + this.state.show);
+
+    if (uRole === "admin" || uRole === "manager") {
+      this.handleUser();
+    }
+  }
+
   render() {
     return (
       <div className="wrapper">
@@ -36,9 +58,16 @@ export default class Sidebar extends React.Component {
               {" "}
               <a href="/search"> Search </a>{" "}
             </li>
+
+            {this.state.show && (
+              <li show="this.state.show">
+                {" "}
+                <a href="/teams/getteamproject"> Team </a>{" "}
+              </li>
+            )}
             <li>
               {" "}
-              <a href="/teams/getteamproject"> Team </a>{" "}
+              <a href="/docs/getprojectdocs"> Documents </a>{" "}
             </li>
           </ul>
         </div>

@@ -21,6 +21,13 @@ class ViewTask extends Component {
       return;
     }
 
+    let userId;
+    let userRole;
+    if (localStorage && localStorage.userid) {
+      userId = localStorage.userid;
+      userRole = localStorage.role;
+    }
+
     this.state = {
       taskid: "",
       projectList: [],
@@ -37,12 +44,7 @@ class ViewTask extends Component {
       priorityList: ["Low", "Medium", "High"],
       ownerList: [],
       creatorList: [],
-      sprintList: [
-        { id: "", name: "Select a sprint" },
-        { id: 1, name: "sprint1" },
-        { id: 2, name: "sprint2" },
-        { id: 3, name: "sprint3" },
-      ],
+      sprintList: [{ id: "", name: "Select a sprint" }],
       validationErrorFlag: false,
       errorMsg: "",
       modelFlag: false,
@@ -58,6 +60,9 @@ class ViewTask extends Component {
       blobData: "",
       commentList: [],
       comment: "",
+      userId: userId,
+      userRole: userRole,
+      createdBy: "",
     };
   }
 
@@ -79,8 +84,11 @@ class ViewTask extends Component {
 
     let taskid = this.props.location.state.taskid;
 
-    var config = {
-      headers: { "Content-Type": "application/json" },
+    let config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
     };
 
     this.setState({
@@ -89,19 +97,22 @@ class ViewTask extends Component {
     });
 
     if (taskid) {
-      let url = CONST.URL + "task/user/1";
-
-      var config = {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-      };
+      let url =
+        CONST.URL + `task/user/${this.state.userId}/${this.state.userRole}`;
 
       await axios
         .get(url, config)
         .then((res) => {
           let obj = this.decryptFunc(res.data);
+
+          if (!obj || Object.keys(obj).length === 0) {
+            this.setState({
+              loading: false,
+              modalFlag: true,
+              modalRoute: 2,
+              modalMsg: errMsg["35"],
+            });
+          }
 
           this.setState({
             projectList: obj.project,
@@ -121,7 +132,7 @@ class ViewTask extends Component {
 
       await axios
         .get(url2, config)
-        .then((res) => {
+        .then(async (res) => {
           let decrypObj = this.decryptFunc(res.data);
 
           if (decrypObj === 40 || decrypObj === "40") {
@@ -142,6 +153,45 @@ class ViewTask extends Component {
                 });
               }
             });
+
+            let url3 =
+              CONST.URL +
+              `task/${decrypObj.projectid}/${this.state.userId}/${this.state.userRole}`;
+
+            await axios
+              .get(url3)
+              .then((res) => {
+                let obj = this.decryptFunc(res.data);
+
+                if (!obj || Object.keys(obj).length === 0) {
+                  this.setState({
+                    loading: false,
+                    modalFlag: true,
+                    modalRoute: 1,
+                    modalMsg: errMsg["35"],
+                  });
+                }
+
+                this.setState({
+                  ownerList: obj.user,
+                  creatorList: obj.user,
+                  loading: false,
+                });
+
+                if (obj.sprint) {
+                  this.setState({
+                    sprintList: obj.sprint,
+                  });
+                }
+              })
+              .catch((err) => {
+                this.setState({
+                  loading: false,
+                  modalRoute: 1,
+                  modalMsg: errMsg["19"],
+                  modalFlag: true,
+                });
+              });
 
             if (this.state.duedate) {
               let date = this.state.duedate;
@@ -226,11 +276,14 @@ class ViewTask extends Component {
       backendObj.taskid = this.state.taskid;
       backendObj.comment = this.state.comment;
       backendObj.status = this.state.status;
+      backendObj.userId = this.state.userId;
 
       const headers = {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
       };
+
+      console.log("backendObj", backendObj);
 
       let encryp_backendObj = this.encrypFunc(backendObj);
 
@@ -421,6 +474,9 @@ class ViewTask extends Component {
 
   render() {
     const dateString = "Date: ";
+
+    const showDelete = this.state.userRole !== "developer";
+
     return (
       <section>
         {this.state ? (
@@ -428,7 +484,7 @@ class ViewTask extends Component {
             <section className="row ">
               <section className="container fluid">
                 <section className="row justify-content-center">
-                  <section className="col create-section border rounded">
+                  <section className="col create-section">
                     <main className="col-sm-12 text-center pt-1 pb-1">
                       {this.state && this.state.validationErrorFlag ? (
                         <p style={{ color: "red" }} className="errorMsg">
@@ -438,9 +494,13 @@ class ViewTask extends Component {
                       ) : null}
                     </main>
                     <section className="col-sm-12 text-center pt-2 pb-4">
-                      <h3 className="createTitle ">View</h3>
+                      <h3 className="createTitle ">View Task</h3>
                     </section>
+
                     <form className="form-container">
+                      <text style={{ marginLeft: "0.8em", fontSize: "0.8em" }}>
+                        &nbsp;Created By: {this.state.createdBy}
+                      </text>
                       <section className="row ">
                         <section className="form-group col-12 col-sm-12 col-md-4">
                           <label htmlFor="projectid"> Project* </label>
@@ -452,14 +512,15 @@ class ViewTask extends Component {
                             name="projectid"
                             disabled
                           >
-                            {this.state.projectList.map((projectOption) => (
-                              <option
-                                key={projectOption.name}
-                                value={projectOption.id}
-                              >
-                                {projectOption.name}
-                              </option>
-                            ))}
+                            {this.state.projectList &&
+                              this.state.projectList.map((projectOption) => (
+                                <option
+                                  key={projectOption.name}
+                                  value={projectOption.id}
+                                >
+                                  {projectOption.name}
+                                </option>
+                              ))}
                           </select>
                         </section>
                         <section className="form-group col-12 col-sm-12 col-md-4">
@@ -483,14 +544,15 @@ class ViewTask extends Component {
                             name="status"
                             required
                           >
-                            {this.state.statusList.map((statusOption) => (
-                              <option
-                                key={statusOption.value}
-                                value={statusOption.id}
-                              >
-                                {statusOption.value}
-                              </option>
-                            ))}
+                            {this.state.statusList &&
+                              this.state.statusList.map((statusOption) => (
+                                <option
+                                  key={statusOption.value}
+                                  value={statusOption.id}
+                                >
+                                  {statusOption.value}
+                                </option>
+                              ))}
                           </select>
                         </section>
                       </section>
@@ -549,23 +611,24 @@ class ViewTask extends Component {
                           </select>
                         </section>
                         <section className="form-group col-12 col-sm-12 col-md-4">
-                          <label htmlFor="owner">Owner*</label>
+                          <label htmlFor="owner">Assigned To*</label>
                           <select
-                            value={this.state.owner}
                             onChange={this.handleOnChange}
+                            value={this.state.owner}
                             className="form-control"
                             id="owner"
                             name="owner"
                             required
                           >
-                            {this.state.ownerList.map((ownerOption) => (
-                              <option
-                                key={ownerOption.name}
-                                value={ownerOption.id}
-                              >
-                                {ownerOption.name}
-                              </option>
-                            ))}
+                            {this.state.ownerList &&
+                              this.state.ownerList.map((ownerOption) => (
+                                <option
+                                  key={ownerOption.name}
+                                  value={ownerOption.id}
+                                >
+                                  {ownerOption.name}
+                                </option>
+                              ))}
                           </select>
                         </section>
                         <section className="form-group col-12 col-sm-12 col-md-4">
@@ -584,7 +647,7 @@ class ViewTask extends Component {
                       </section>
                       <section className="row">
                         <section className="form-group col-12 col-sm-12 col-md-4">
-                          <label htmlFor="creator">Creator*</label>
+                          <label htmlFor="creator">Tracked By*</label>
                           <select
                             value={this.state.creator}
                             className="form-control"
@@ -592,18 +655,19 @@ class ViewTask extends Component {
                             name="creator"
                             disabled
                           >
-                            {this.state.creatorList.map((creatorOption) => (
-                              <option
-                                key={creatorOption.name}
-                                value={creatorOption.id}
-                              >
-                                {creatorOption.name}
-                              </option>
-                            ))}
+                            {this.state.creatorList &&
+                              this.state.creatorList.map((creatorOption) => (
+                                <option
+                                  key={creatorOption.name}
+                                  value={creatorOption.id}
+                                >
+                                  {creatorOption.name}
+                                </option>
+                              ))}
                           </select>
                         </section>
-                        <section className="form-group col-12 col-sm-12 col-md-4">
-                          <label htmlFor="sprintid">Sprint Name</label>
+                        {/*<section className="form-group col-12 col-sm-12 col-md-4">
+                           <label htmlFor="sprintid">Sprint Name</label>
                           <select
                             value={this.state.sprintid}
                             onChange={this.handleOnChange}
@@ -619,8 +683,8 @@ class ViewTask extends Component {
                                 {sprintOption.name}
                               </option>
                             ))}
-                          </select>
-                        </section>
+                          </select> 
+                        </section>*/}
                         <section className="form-group col-12 col-sm-12 col-md-4">
                           <label htmlFor="duedate">Due Date</label>
                           <DatePicker
@@ -640,13 +704,15 @@ class ViewTask extends Component {
                         >
                           Update
                         </button>
-                        <button
-                          onClick={this.onDelete}
-                          type="submit"
-                          className="btn btn-info btn-centre ml-3 mt-4"
-                        >
-                          Delete
-                        </button>
+                        {showDelete ? (
+                          <button
+                            onClick={this.onDelete}
+                            type="submit"
+                            className="btn btn-info btn-centre ml-3 mt-4"
+                          >
+                            Delete
+                          </button>
+                        ) : null}
                         <button
                           onClick={this.onClose}
                           type="submit"
@@ -689,8 +755,7 @@ class ViewTask extends Component {
                                     alt="logo"
                                   />
                                   <text style={{ fontSize: "0.8em" }}>
-                                    &nbsp;Name: To be captured after login
-                                    module completion
+                                    &nbsp;Name: {comment.userName}
                                     <br />
                                     {dateString}
                                     {comment.date}

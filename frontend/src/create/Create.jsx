@@ -62,12 +62,10 @@ class Create extends Component {
       },
     };
 
+    let url = CONST.URL + "create";
+
     try {
-      const res = await axios.post(
-        "https://csci5709-group11-backend.herokuapp.com/create",
-        JSON.stringify(this.state),
-        config
-      );
+      const res = await axios.post(url, JSON.stringify(this.state), config);
       let mess = res.data;
 
       if (mess === "18" || mess === 18) {

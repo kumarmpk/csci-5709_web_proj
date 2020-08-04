@@ -16,6 +16,8 @@ class HomePageHeader extends Component {
     auth.logout(() => {
       if (localStorage.getItem("authenticated") !== null) {
         localStorage.removeItem("authenticated");
+        localStorage.removeItem("userid");
+        localStorage.removeItem("role");
       }
       this.props.history.push("/");
     });
@@ -70,25 +72,25 @@ class HomePageHeader extends Component {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav>
               <Nav.Link className="text-light font-weight-bold" href="/home">
-                Project
+                Projects
               </Nav.Link>
-              <Nav.Link className="text-light font-weight-bold" href="/search">
-                Search
+              <Nav.Link className="text-light font-weight-bold" href="/announcements">
+                Announcements
               </Nav.Link>
               <Nav.Link className="text-light font-weight-bold" href="/create">
                 Create
               </Nav.Link>
               <Nav.Link
                 className="text-light font-weight-bold"
-                href="/dashboard"
+                href="/teams/getteamproject"
               >
-                Dashboard
+                Teams
               </Nav.Link>
-              <Nav.Link className="text-light font-weight-bold" href="/users">
-                Users
+              <Nav.Link className="text-light font-weight-bold" href="/docs/getprojectdocs">
+                Documents
               </Nav.Link>
             </Nav>
-            <Form inline>
+            {/* <Form inline>
               <input
                 className="form-control my-2 mr-sm-2 search border rounded"
                 type="number"
@@ -106,7 +108,7 @@ class HomePageHeader extends Component {
               >
                 Search
               </Button>
-            </Form>
+            </Form> */}
             <Button
               className="text-light ml-auto mr-2"
               onClick={this.handleLogout}

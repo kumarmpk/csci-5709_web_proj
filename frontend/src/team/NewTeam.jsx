@@ -1,5 +1,4 @@
 /*author :Japnoor Kaur */
-
 import React, { Component } from "react";
 import axios from "axios";
 import "./AddPeople.css";
@@ -42,7 +41,7 @@ class NewTeam extends Component {
 
       let url = CONST.URL + "teams/createteam";
 
-      const res = axios.post(url, userData, config).then((res) => {
+      axios.post(url, userData, config).then((res) => {
         console.log(res);
       });
 
@@ -53,7 +52,7 @@ class NewTeam extends Component {
   //method to handle modal to get user know that specific task is done
   handleModal = () => {
     this.setState({ show: !this.state.show });
-    if (this.state.show == true) {
+    if (this.state.show === true) {
       window.location.reload();
     }
   };
@@ -114,27 +113,38 @@ class NewTeam extends Component {
         <main className="usersForm">
           <div className="teamRow">
             <div className="col-12 col-sm-8 col-md-11 col-lg-10 border rounded">
+              <br />
               <div className="format">
                 <br />
 
-                <h3 className="message">Team Management</h3>
-                <form onSubmit={this.btnClick}>
-                  <br />
-                  <br />
-                  <label for="tname" className="textformat">
-                    Team name:
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    id="tname"
-                    name="teamName"
-                    value={this.state.teamName}
-                    onChange={this.beforeChange}
-                  />
-                  <div style={{ color: "red" }}>{this.state.teamNameError}</div>
-                  <br />
-                  <br />
+                <h3>Team Management</h3>
+                <br />
+                <h6>Create Team</h6>
+              </div>
+              <form onSubmit={this.btnClick}>
+                <br />
+                <br />
+                <label style={{ paddingLeft: "25%" }}>Team name*:</label>
+
+                <br />
+                <div className="format">
+                  <div style={{ paddingLeft: "25%" }}>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="tname"
+                      required={true}
+                      name="teamName"
+                      style={{ width: "70%" }}
+                      value={this.state.teamName}
+                      onChange={this.beforeChange}
+                    />
+                    <div style={{ color: "red" }}>
+                      {this.state.teamNameError}
+                    </div>
+                    <br />
+                    <br />
+                  </div>
 
                   <br />
                   <input
@@ -143,19 +153,23 @@ class NewTeam extends Component {
                     className="btn btn-info"
                     style={{ marginBottom: "2em" }}
                   />
-                </form>
-                <div>
-                  <Modal centered show={this.state.show}>
-                    <Modal.Header>Team Created</Modal.Header>
-                    <Modal.Body>
-                      Team has been successfully created!{" "}
-                    </Modal.Body>
-                    <Modal.Footer>
-                      {" "}
-                      <button onClick={this.handleModal}>Close</button>
-                    </Modal.Footer>
-                  </Modal>
                 </div>
+              </form>
+              <div className="format">
+                <a href="/teams/getteamproject"> Go to Teams </a>{" "}
+              </div>
+              <br />
+              <div>
+                <Modal centered show={this.state.show}>
+                  <Modal.Header>Team Created</Modal.Header>
+                  <Modal.Body>Team has been successfully created! </Modal.Body>
+                  <Modal.Footer>
+                    {" "}
+                    <button className="btn btn-info" onClick={this.handleModal}>
+                      Close
+                    </button>
+                  </Modal.Footer>
+                </Modal>
               </div>
             </div>
           </div>
