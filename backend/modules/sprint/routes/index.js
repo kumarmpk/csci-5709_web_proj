@@ -30,7 +30,7 @@ sprint_router.get("*", (req, res) => {
 });
 
 sprint_router.post("/create", createSprint);
-sprint_router.delete("/delete", deleteSprint);
+sprint_router.post("/delete", deleteSprint);
 sprint_router.put("/endSprint", endSprint);
 sprint_router.post("/getSprint", getNotCompletedSprint);
 sprint_router.post("/gettask", getTask);
