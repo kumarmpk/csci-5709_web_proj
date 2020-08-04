@@ -4,16 +4,28 @@
 import React, { Component } from "react";
 import "./ResetPassword.css";
 import axios from "axios";
+import CONST from "../constants";
 
 class ResetPassword extends Component {
-  state = {
-    email: "",
-    emailError: "",
-    password: "",
-    passwordError: "",
-    confirmPassword: "",
-    confirmPasswordError: "",
-  };
+  constructor(props) {
+    super(props);
+    var emailid = "";
+    if (localStorage.getItem("otp_email") !== null) {
+      emailid = localStorage.getItem("otp_email");
+      localStorage.removeItem("otp_email");
+    } else {
+      this.props.history.push("/otp");
+    }
+
+    this.state = {
+      email: emailid,
+      emailError: "",
+      password: "",
+      passwordError: "",
+      confirmPassword: "",
+      confirmPasswordError: "",
+    };
+  }
 
   updateValues = (e) => {
     this.setState({
@@ -75,12 +87,10 @@ class ResetPassword extends Component {
       password: this.state.password,
     };
 
+    let url = CONST.URL + "resetpassword";
+
     await axios
-      .post(
-        "https://csci5709-group11-backend.herokuapp.com/resetpassword",
-        { data: userData },
-        config
-      )
+      .post(url, { data: userData }, config)
       .then((res) => {
         if (res["status"] === 200) {
           this.props.history.push("/login");
@@ -133,7 +143,7 @@ class ResetPassword extends Component {
                           onChange={(e) => this.updateValues(e)}
                           type="email"
                           class="form-control"
-                          placeholder="Enter email address"
+                          disabled="disabled"
                         ></input>
                         <p align="left" style={{ color: "red" }}>
                           {this.state.emailError}

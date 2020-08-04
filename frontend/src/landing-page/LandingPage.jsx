@@ -7,6 +7,14 @@ import documentsImage from "../img/Documents.PNG";
 import Footer from "../../src/common-components/Footer";
 
 class LandingPage extends Component {
+  constructor(props) {
+    super(props);
+
+    if (localStorage.getItem("authenticated") !== null) {
+      this.props.history.push("/create");
+    }
+  }
+
   render() {
     return (
       <article>
