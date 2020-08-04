@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 class HomePageHeader extends Component {
   constructor(props) {
     super(props);
+    var { isVisible } = props;
     this.state = {
       search: "",
     };
@@ -74,7 +75,10 @@ class HomePageHeader extends Component {
               <Nav.Link className="text-light font-weight-bold" href="/home">
                 Projects
               </Nav.Link>
-              <Nav.Link className="text-light font-weight-bold" href="/announcements">
+              <Nav.Link
+                className="text-light font-weight-bold"
+                href="/announcements"
+              >
                 Announcements
               </Nav.Link>
               <Nav.Link className="text-light font-weight-bold" href="/create">
@@ -86,7 +90,10 @@ class HomePageHeader extends Component {
               >
                 Teams
               </Nav.Link>
-              <Nav.Link className="text-light font-weight-bold" href="/docs/getprojectdocs">
+              <Nav.Link
+                className="text-light font-weight-bold"
+                href="/docs/getprojectdocs"
+              >
                 Documents
               </Nav.Link>
             </Nav>

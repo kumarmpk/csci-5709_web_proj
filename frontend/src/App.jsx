@@ -35,6 +35,11 @@ import DocumentUpdate from "./documents/DocumentUpdate";
 class Routes extends Component {
   constructor(props) {
     super(props);
+    const { history } = props;
+    var isVisible = false;
+    if (history.location.pathname === "/") {
+      isVisible = true;
+    }
     this.state = {
       SideBarPath: [
         "/",
@@ -45,6 +50,7 @@ class Routes extends Component {
         "/contact-us",
         "/otp",
       ],
+      isVisible: isVisible,
     };
   }
 
@@ -66,7 +72,7 @@ class Routes extends Component {
 
         {isAuthenticated ? (
           <header className={isAuthenticated ? null : "margin-col-content"}>
-            <AppHeader />
+            <AppHeader isVisible={this.state.isVisible} />
           </header>
         ) : (
           <header

@@ -11,7 +11,7 @@ class Register extends Component {
     super(props);
 
     if (localStorage.getItem("authenticated") !== null) {
-      this.props.history.push("/create");
+      this.props.history.push("/home");
     }
   }
 
