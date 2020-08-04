@@ -60,6 +60,7 @@ export class Projects extends Component {
   };
 
   displayProjTable = () => {
+    const {history} = this.props
     return this.state.filteredProjects.length > 0 ? (
       <div className="col-12 col-sm-12">
         <table className="table table-hover">
@@ -74,7 +75,7 @@ export class Projects extends Component {
           <tbody>
             {this.state.filteredProjects.map((data) => {
               return (
-                <tr>
+                <tr onClick={()=> history.push(`/sprint/${data.projectID}`)}>
                   <th>{data.projectName}</th>
                   <td>{data.manager || "-"}</td>
                   <td>{data.teamName || "-"}</td>

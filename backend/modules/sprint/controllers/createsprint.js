@@ -5,13 +5,18 @@
 const connectionObject = require('../../../MySQLCon')
 
 var createSprint = (req, res) => {
+    console.log(req.body);
     if (
         !req.body.hasOwnProperty("sprintname") ||
-        !req.body.hasOwnProperty("projectID")
+        !req.body.hasOwnProperty("projectID") || req.body.sprintname == ""
     ) {
         return res
             .status(400)
             .json({ msg: `Please include all mandatory details- sprintname, and projectID` });
+    } else if (Number.isInteger(req.body['projectID']) == false) {
+        return res
+            .status(400)
+            .json({ msg: `Please enter valid projectID` });
     }
 
     let where = ' projectID = ?';
@@ -31,14 +36,20 @@ var createSprint = (req, res) => {
             order = result[0].sprintOrder + 1;
         }
 
-        console.log('result: ', result.rows);
+        // console.log('result: ', result.rows);
         console.log('order: ', order);
         let sprintDataInsert = 'INSERT INTO Sprints SET ?';
-        let sprintdata = { order: order, sprintname: req.body.sprintname, duration: null, startdate: null, enddate: null, description: null, isComplete: null, projectID: req.body.projectID };
+        var sprintdata;
+        if (req.body.description) {
+            sprintdata = { order: order, sprintname: req.body.sprintname, duration: null, startdate: null, enddate: null, description: req.body.description, isComplete: null, projectID: req.body.projectID };    
+        } else {
+            sprintdata = { order: order, sprintname: req.body.sprintname, duration: null, startdate: null, enddate: null, description: null, isComplete: null, projectID: req.body.projectID };    
+        }
+        
 
         connectionObject.query(sprintDataInsert, sprintdata, (err, result) => {
             if (err) {
-                throw err;
+                res.status(503).json({ msg: `error while inserting new sprint details in project with projectID: ${req.body.projectID} in database` });
             }
             res.status(200).json({ msg: `New sprint: ${sprintdata.sprintname} is successfully created!` });
         });
