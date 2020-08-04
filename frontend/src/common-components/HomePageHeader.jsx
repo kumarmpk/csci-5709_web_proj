@@ -10,7 +10,23 @@ class HomePageHeader extends Component {
     var { isVisible } = props;
     this.state = {
       search: "",
+      show: false,
     };
+  }
+
+  handleUser = () => {
+    this.setState({ show: !this.state.show });
+    console.log("state=" + this.state.show);
+  };
+
+  componentDidMount() {
+    let uRole = localStorage.role;
+    console.log("uRole=" + uRole);
+    console.log("state before=" + this.state.show);
+
+    if (uRole === "admin" || uRole === "manager") {
+      this.handleUser();
+    }
   }
 
   handleLogout = (e) => {
@@ -67,6 +83,7 @@ class HomePageHeader extends Component {
           <Navbar.Toggle
             aria-controls="basic-navbar-nav"
             className="text-light font-weight-bold"
+            data-toggle="collapse"
           >
             Menu
           </Navbar.Toggle>
@@ -84,12 +101,14 @@ class HomePageHeader extends Component {
               <Nav.Link className="text-light font-weight-bold" href="/create">
                 Create
               </Nav.Link>
-              <Nav.Link
-                className="text-light font-weight-bold"
-                href="/teams/getteamproject"
-              >
-                Teams
-              </Nav.Link>
+              {this.state.show && (
+                <Nav.Link
+                  className="text-light font-weight-bold"
+                  href="/teams/getteamproject"
+                >
+                  Teams
+                </Nav.Link>
+              )}
               <Nav.Link
                 className="text-light font-weight-bold"
                 href="/docs/getprojectdocs"
@@ -97,7 +116,7 @@ class HomePageHeader extends Component {
                 Documents
               </Nav.Link>
             </Nav>
-            {/* <Form inline>
+            <Form inline>
               <input
                 className="form-control my-2 mr-sm-2 search border rounded"
                 type="number"
@@ -115,7 +134,7 @@ class HomePageHeader extends Component {
               >
                 Search
               </Button>
-            </Form> */}
+            </Form>
             <Button
               className="text-light ml-auto mr-2"
               onClick={this.handleLogout}

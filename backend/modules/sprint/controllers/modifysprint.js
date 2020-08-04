@@ -5,13 +5,18 @@
 const connectionObject = require('../../../MySQLCon')
 
 var modifySprint = (req, res) => {
-    if ((!req.body.hasOwnProperty("sprintname") && !req.body.hasOwnProperty("description")) || !req.body.hasOwnProperty("projectID") || !req.body.hasOwnProperty("sprintID")) {
+    console.log('req', req.body);
+    if ((!req.body.hasOwnProperty("sprintname") && !req.body.hasOwnProperty("description")) || !req.body.hasOwnProperty("projectID") || !req.body.hasOwnProperty("sprintID") || req.body['sprintname'] == '' ) {
         return res
             .status(400)
             .json({ msg: `Please include all mandatory details- sprintname, or deescrption and projectID as well as sprintID` });
+    } else if (Number.isInteger(req.body['projectID']) == false || Number.isInteger(req.body['sprintID']) == false || typeof req.body['sprintname'] != "string") {
+        return res
+            .status(400)
+            .json({ msg: `Please enter valid projectID, sprintID, and sprintname` });
     }
 
-    let whereSprintID = 'WHERE sprintID = ? and projectID = ? and isComplete = ?'
+    let whereSprintID = 'WHERE sprintID = ? and projectID = ? and isComplete IS NULL'
     // let whereProjectID = '&& projectID = ?'
     let updateSprintName = 'UPDATE Sprints SET sprintname = ? '+ whereSprintID
     let updateSprintDesc = 'UPDATE Sprints SET description = ? '+ whereSprintID
@@ -27,10 +32,11 @@ var modifySprint = (req, res) => {
             if (err) {
                 throw err;
             }
-            if (result[0] == 0) {
+            console.log('dta', result.affectedRows);
+            if (result.affectedRows == 0) {
                 res.status(500).json({ msg: `No sprint found in database with sprintID: ${req.body.sprintID}` });
             }
-            else if (result[0] == 1) {
+            else if (result.affectedRows == 1) {
                 //modifing description of sprint
                 if (req.body.description) {
                     descUpdated = true
@@ -38,10 +44,10 @@ var modifySprint = (req, res) => {
                         if (err) {
                             throw err;
                         }
-                        if (result[0] == 0) {
+                        if (result.affectedRows == 0) {
                             res.status(500).json({ msg: `No sprint found in database with with sprintID: ${req.body.sprintID}` });
                         }
-                        else if (result[0] == 1) {
+                        else if (result.affectedRows == 1) {
                             res.status(200).json({ msg: `name and description for ${req.body.sprintID} successfully modified` });
                         }
                     })
@@ -57,10 +63,10 @@ var modifySprint = (req, res) => {
             if (err) {
                 throw err;
             }
-            if (result[0] == 0) {
+            if (result.affectedRows == 0) {
                 res.status(500).json({ msg: `No sprint found in database with with sprintID: ${req.body.sprintID}` });
             }
-            else if (result[0] == 1) {
+            else if (result.affectedRows == 1) {
                 res.status(200).json({ msg: `description for ${req.body.sprintname} successfully modified` });
             }
         })

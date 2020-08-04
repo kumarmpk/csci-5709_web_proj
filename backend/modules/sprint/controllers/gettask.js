@@ -6,11 +6,15 @@ const connectionObject = require('../../../MySQLCon');
 
 var getTask = (req, res) => {
     if (
-        !req.body.hasOwnProperty("projectID")
+        !req.body.hasOwnProperty("projectID") || req.body['projectID'] == null
     ) {
         return res
             .status(400)
             .json({ msg: `Please include all mandatory details- projectID` });
+    } else if (Number.isInteger(req.body['projectID']) == false) {
+        return res
+            .status(400)
+            .json({ msg: `Please enter valid projectID` });
     }
 
     whereTask = 'WHERE projectid = ?'

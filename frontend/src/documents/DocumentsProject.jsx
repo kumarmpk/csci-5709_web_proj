@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import CONST from "../constants";
 
 var value;
 
@@ -22,17 +23,22 @@ class DocumentsProject extends Component {
       },
     };*/
 
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
     var projectID = this.state.projectID;
+    let url = CONST.URL + "docs/managedocs/" + projectID;
 
     // console.log("id=" + projectID);
-    axios
-      .get("http://localhost:4000/docs/managedocs/" + projectID)
-      .then((res) => {
-        //console.log(res);
-        this.setState({
-          docs: res.data,
-        });
+    axios.get(url, config).then((res) => {
+      //console.log(res);
+      this.setState({
+        docs: res.data,
       });
+    });
   };
   //method to set projectID parameter
   setVarVal = (e) => {
@@ -50,20 +56,28 @@ class DocumentsProject extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
     let uid = localStorage.userid;
+
+    let url = CONST.URL + "docs/getprojectdocs/" + uid;
+
     //console.log("uid=" + uid);
-    axios
-      .get("http://localhost:4000/docs/getprojectdocs/" + uid)
-      .then((res) => {
-        //console.log(res);
-        this.setState({
-          projects: res.data,
-        });
-        // console.log("data=" + res.data.length);
-        if (res.data.length === 0) {
-          this.setState({ show2: !this.state.show2 });
-        }
+    axios.get(url, config).then((res) => {
+      //console.log(res);
+      this.setState({
+        projects: res.data,
       });
+      // console.log("data=" + res.data.length);
+      if (res.data.length === 0) {
+        this.setState({ show2: !this.state.show2 });
+      }
+    });
   }
 
   render() {
