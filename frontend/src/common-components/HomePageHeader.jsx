@@ -7,6 +7,7 @@ import { withRouter } from "react-router-dom";
 class HomePageHeader extends Component {
   constructor(props) {
     super(props);
+    var { isVisible } = props;
     this.state = {
       search: "",
       show: false,
