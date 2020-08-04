@@ -114,7 +114,7 @@ class HomePageHeader extends Component {
                 Documents
               </Nav.Link>
             </Nav>
-            {/* <Form inline>
+            <Form inline>
               <input
                 className="form-control my-2 mr-sm-2 search border rounded"
                 type="number"
@@ -132,7 +132,7 @@ class HomePageHeader extends Component {
               >
                 Search
               </Button>
-            </Form> */}
+            </Form>
             <Button
               className="text-light ml-auto mr-2"
               onClick={this.handleLogout}
