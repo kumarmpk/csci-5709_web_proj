@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 class Documents extends Component {
   state = {
@@ -31,8 +32,17 @@ class Documents extends Component {
 
   //it will be executed after the whole page is loaded
   componentDidMount() {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+
     const r = this.getParam();
-    axios.get("http://localhost:4000/docs/managedocs/" + r).then((res) => {
+    let url = CONST.URL + "docs/managedocs/" + r;
+
+    axios.get(url, config).then((res) => {
       //console.log(res);
       this.setState({
         docs: res.data,
@@ -49,7 +59,15 @@ class Documents extends Component {
       },
     };*/
 
-    axios.delete("http://localhost:4000/docs/deletedoc/" + id).then((res) => {
+    var config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    };
+    let url = CONST.URL + "docs/deletedoc/" + id;
+
+    axios.delete(url, config).then((res) => {
       // console.log(res);
     });
 
