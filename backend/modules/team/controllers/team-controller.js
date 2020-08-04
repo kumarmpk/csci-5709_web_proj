@@ -105,17 +105,32 @@ exports.getAllMembers = (req, res) => {
 //method to get all members of the team
 exports.getAllProjects = (req, res) => {
   //tname = req.params.teamID;
+  if (req.params.uId == "2") {
+    let sql = `Select projectName, projectID from Project;`;
+    //let sql = `Select projectName, projectID from Project;`;
+    let sqlquery = connect.query(sql, (err, result) => {
+      if (err) {
+        console.log("error occured");
+        throw err;
+      }
+      res.status(200).json(result);
 
-  let sql = `Select projectName, projectID from Project;`;
-  let sqlquery = connect.query(sql, (err, result) => {
-    if (err) {
-      console.log("error occured");
-      throw err;
-    }
-    res.status(200).json(result);
+      console.log("get all projects executed for admin");
+    });
+  } else {
+    let sql = `Select projectName, projectID from Project where projectID IN (Select project_ID from projectUserTeam where team_ID IN (Select teamID from userTeam where userID='${req.params.uId}'));`;
 
-    console.log("get all projects executed");
-  });
+    // let sql = `Select projectName, projectID from Project;`;
+    let sqlquery = connect.query(sql, (err, result) => {
+      if (err) {
+        console.log("error occured");
+        throw err;
+      }
+      res.status(200).json(result);
+
+      console.log("get all projects executed");
+    });
+  }
 };
 
 //method to create a new team

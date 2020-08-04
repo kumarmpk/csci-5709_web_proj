@@ -6,18 +6,19 @@ const express = require("express");
 const task_router = express.Router();
 const { post_task } = require("../controllers/task");
 const { get_task } = require("../controllers/task");
-const { get_user_rel_details } = require("../controllers/task");
+const { get_user_proj_list } = require("../controllers/task");
+const { get_proj_rel_dtls } = require("../controllers/task");
 const { put_task } = require("../controllers/task");
 const { delete_task } = require("../controllers/task");
 const { encryption } = require("../../../constants");
 const crypto = require("crypto");
+const { profileEnd } = require("console");
 
 task_router.get("/:id", (req, res) => {
   try {
     let id = req.params.id;
 
     get_task(id, (response) => {
-      console.log(response);
       if (response === "19") return res.status(500).send(encryptFunc("19"));
       else if (response) {
         return res.status(200).send(encryptFunc(response));
@@ -30,16 +31,49 @@ task_router.get("/:id", (req, res) => {
   }
 });
 
-task_router.get("/user/:id", (req, res) => {
+task_router.get("/user/:id/:role", (req, res) => {
   try {
-    let id = req.params.id;
+    let obj = {
+      id: req.params.id,
+      role: req.params.role,
+    };
 
-    get_user_rel_details(id, (response) => {
-      if (response === "19") return res.status(500).send(encryptFunc("19"));
-      else if (response) {
-        return res.status(200).send(encryptFunc(response));
-      } else return res.status(500).send(encryptFunc("19"));
-    });
+    if (obj && Object.keys(obj).length) {
+      get_user_proj_list(obj, (response) => {
+        if (response === "19") return res.status(500).send(encryptFunc("19"));
+        else if (response) {
+          return res.status(200).send(encryptFunc(response));
+        } else return res.status(500).send(encryptFunc("19"));
+      });
+    } else {
+      res.status(406).send(encryptFunc("19"));
+    }
+  } catch (err) {
+    res.status(406).send(encryptFunc("19"));
+  }
+});
+
+task_router.get("/:projectId/:userId/:role", (req, res) => {
+  try {
+    let projectId = req.params.projectId;
+    let userId = req.params.userId;
+    let role = req.params.role;
+
+    if (projectId && userId && role) {
+      let obj = {
+        projectId: projectId,
+        userId: userId,
+        role: role,
+      };
+      get_proj_rel_dtls(obj, (response) => {
+        if (response === "19") return res.status(500).send(encryptFunc("19"));
+        else if (response) {
+          return res.status(200).send(encryptFunc(response));
+        } else return res.status(500).send(encryptFunc("19"));
+      });
+    } else {
+      res.status(406).send(encryptFunc("19"));
+    }
   } catch (err) {
     res.status(406).send(encryptFunc("19"));
   }

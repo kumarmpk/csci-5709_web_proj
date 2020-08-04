@@ -56,11 +56,21 @@ function createProject(req, res) {
 
 function getProjects(req, res) {
     let query
+    
+    query = `SELECT DISTINCT projectID,projectName, manager, endDate, Team.teamName FROM webproject.userTeam`
+            + ` join webproject.projectUserTeam on userTeam.teamID=projectUserTeam.team_ID`
+            + ` join webproject.Team on userTeam.teamID = Team.teamID`
+            + ` join webproject.Project on projectUserTeam.project_ID=Project.projectID`
+            +  ` where userTeam.userID=${req.query.user_id}`;
+
+    console.log("HERE");
+    console.log(query);
+    console.log("THERE");
     if (req.query.projectName && req.query.projectName !== '') {
-        query = `select * from Project WHERE projectName LIKE '%${req.query.projectName}%'`;
-    } else {
+        query = query + ` AND projectName LIKE '%${req.query.projectName}%'`;
+    } /*else {
         query = 'select * from Project';
-    }
+    }*/
     connect.query(query, (error, success) => {
         if (error) {
             res.status(500).json({ msg: error });

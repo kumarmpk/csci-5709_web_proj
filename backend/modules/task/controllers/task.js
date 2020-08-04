@@ -4,25 +4,14 @@
 
 const mysql = require("mysql");
 const config = require("../../../config");
+const e = require("express");
 
-let connect = mysql.createConnection({
+let db = mysql.createPool({
   host: config.mySQLConfig.host,
   user: config.mySQLConfig.user,
   password: config.mySQLConfig.password,
   port: config.mySQLConfig.port,
-});
-
-let query = "use " + config.mySQLConfig.database;
-
-connect.connect(function (error) {
-  if (error) {
-    throw error;
-  }
-  connect.query(query, function (error, result) {
-    if (error) {
-      throw error;
-    }
-  });
+  database: config.mySQLConfig.database,
 });
 
 function isEmpty(input) {
@@ -49,9 +38,9 @@ function insertQuery(task_obj) {
   task_obj.overview = handleSpecialChar(task_obj.overview);
   task_obj.description = handleSpecialChar(task_obj.description);
 
-  let query = `insert into Tasks(createdDate,projectid, type, overview, description, priority, 
+  let query = `insert into Tasks(createdBy, createdDate, projectid, type, overview, description, priority, 
               owner, creator, environment, sprintid, duedate, docid) values
-              (sysdate(), '${task_obj.project}', '${task_obj.type}', 
+              ('${task_obj.userId}', sysdate(), '${task_obj.project}', '${task_obj.type}', 
               '${task_obj.overview}', '${task_obj.description}',
               '${task_obj.priority}', '${task_obj.owner}',
               '${task_obj.creator}',`;
@@ -88,11 +77,21 @@ const post_task = (task_obj, response) => {
   try {
     let insert_task_query = insertQuery(task_obj);
 
-    connect.query(insert_task_query, (insert_task_err, insert_task_result) => {
-      if (insert_task_err) {
+    db.getConnection((err, connection) => {
+      if (err) {
         response("19");
       } else {
-        response(insert_task_result.insertId);
+        connection.query(
+          insert_task_query,
+          (insert_task_err, insert_task_result) => {
+            connection.release();
+            if (insert_task_err) {
+              response("19");
+            } else {
+              response(insert_task_result.insertId);
+            }
+          }
+        );
       }
     });
   } catch (e) {
@@ -101,119 +100,208 @@ const post_task = (task_obj, response) => {
 };
 
 const get_task = (taskid, response) => {
-  let task_query = `select * from Tasks where taskid = ${taskid};`;
+  let task_query = `select t.*, (select userName from User where userID = t.createdBy) as createdBy
+                     from Tasks t where taskid = '${taskid}';`;
+
   let task_obj;
-  connect.query(task_query, (task_err, task_result) => {
-    if (task_err) {
+
+  db.getConnection((err, connection) => {
+    if (err) {
       response("19");
     } else {
-      if (task_result && task_result.length) {
-        task_obj = task_result[0];
+      connection.query(task_query, (task_err, task_result) => {
+        if (task_err) {
+          response("19");
+        } else {
+          if (task_result && task_result.length) {
+            task_obj = task_result[0];
 
-        let comment_query = `select comment, DATE_FORMAT(createdDate, '%b %d, %Y %h:%i %p') as createdDate From Comments 
-                              where taskid = '${task_obj.taskid}' order by id desc;`;
+            let comment_query = `select comm.comment, DATE_FORMAT(comm.createdDate, '%b %d, %Y %h:%i %p') as createdDate,
+                              comm.userid userid, userName From Comments comm, User where taskid = '${task_obj.taskid}' 
+                              and User.userID = comm.userid order by id desc;`;
 
-        connect.query(comment_query, (comment_err, comment_result) => {
-          if (comment_err) {
-            response("19");
+            connection.query(comment_query, (comment_err, comment_result) => {
+              if (comment_err) {
+                response("19");
+              } else {
+                let commentList = [];
+
+                if (comment_result && comment_result.length) {
+                  Object.values(comment_result).forEach((value) => {
+                    let comment = {};
+                    comment.date = value.createdDate;
+                    comment.comment = value.comment;
+                    comment.userid = value.userid;
+                    comment.userName = value.userName;
+                    commentList.push(comment);
+                  });
+                }
+                task_obj.commentList = commentList;
+                connection.release();
+                response(task_obj);
+              }
+            });
           } else {
-            let commentList = [];
-            if (comment_result && comment_result.length) {
-              Object.values(comment_result).forEach((value) => {
-                let comment = {};
-                comment.date = value.createdDate;
-                comment.comment = value.comment;
-                commentList.push(comment);
-              });
-            }
-            task_obj.commentList = commentList;
             response(task_obj);
           }
-        });
-      } else {
-        response(task_obj);
-      }
+        }
+      });
     }
   });
 };
 
-const get_user_rel_details = (userId, response) => {
-  let output = {};
-  let proj_query =
-    `select distinct proj.projectID, proj.projectName
+const get_user_proj_list = (obj, response) => {
+  try {
+    let output = {};
+    let proj_query = `select distinct proj.projectID, proj.projectName
                         from Project proj, projectUserTeam projTeam, userTeam
                         where proj.projectID = projTeam.project_ID 
-                        and projTeam.team_ID = userTeam.teamID ` + //and userTeam.userID = '1'
-    ` order by proj.projectID;`;
+                        and projTeam.team_ID = userTeam.teamID  `;
 
-  connect.query(proj_query, (proj_err, proj_result) => {
-    if (proj_err) {
-      response("19");
-    } else {
-      if (proj_result && proj_result.length) {
-        let proj_obj = [{ id: "", name: "Select a project" }];
-        Object.values(proj_result).forEach((value) => {
-          let project = { id: value["projectID"], name: value["projectName"] };
+    if (obj.role && obj.role !== "admin") {
+      proj_query = proj_query + ` and userTeam.userID = '${obj.id}' `;
+    }
 
-          if (proj_obj && proj_obj.length) {
-            proj_obj.push(project);
+    proj_query = proj_query + " order by proj.projectID; ";
+
+    db.getConnection((err, connection) => {
+      if (err) {
+        console.log(err);
+        response("19");
+      } else {
+        connection.query(proj_query, (proj_err, proj_result) => {
+          if (proj_err) {
+            console.log(proj_err);
+            response("19");
           } else {
-            proj_obj.push(project);
+            if (proj_result && proj_result.length) {
+              let proj_obj = [{ id: "", name: "Select a project" }];
+              Object.values(proj_result).forEach((value) => {
+                let project = {
+                  id: value["projectID"],
+                  name: value["projectName"],
+                };
+                proj_obj.push(project);
+              });
+
+              output["project"] = proj_obj;
+              connection.release();
+              response(output);
+            } else {
+              connection.release();
+              response(output);
+            }
           }
         });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
 
-        output["project"] = proj_obj;
+const get_proj_rel_dtls = (obj, response) => {
+  try {
+    let output = {};
+    let user_query = `select distinct User.userID, User.userName from User, userTeam t1, userTeam t2 where 
+                    t1.userID = User.userID and t1.teamID = t2.teamID 
+                    `;
 
-        let user_query =
-          `select distinct User.userID, User.userName from User, userTeam
-                            where User.userID = userTeam.userID ` + //and User.userID = 1
-          ` order by User.userID;`;
+    if (obj && obj.role && obj.role !== "admin") {
+      user_query = user_query + ` and t2.userID = '${obj.userId}' `;
+    }
 
-        connect.query(user_query, (user_err, user_res) => {
+    user_query =
+      user_query + ` and t2.teamID in (select team_ID from projectUserTeam `;
+
+    if (obj && obj.role && obj.role !== "admin") {
+      user_query = user_query + ` where project_ID = '${obj.projectId}' `;
+    }
+
+    user_query = user_query + ` )  order by User.userID;`;
+
+    db.getConnection((err, connection) => {
+      if (err) {
+        response("19");
+      } else {
+        connection.query(user_query, (user_err, user_result) => {
           if (user_err) {
             response("19");
           } else {
-            if (user_res && user_res.length) {
-              let user_obj = [{ id: "", name: "Select a user" }];
-              Object.values(user_res).forEach((value) => {
-                let user = {
-                  id: value["userID"],
-                  name: value["userName"],
-                };
+            if (user_result && user_result.length) {
+              let user_obj = [{ id: "", name: "Select a User" }];
 
-                if (user_obj && user_obj.length) {
-                  user_obj.push(user);
+              Object.values(user_result).forEach((value) => {
+                let user = { id: value["userID"], name: value["userName"] };
+                user_obj.push(user);
+              });
+
+              output["user"] = user_obj;
+
+              let sprint_query = `select sp.sprintID, sp.sprintname from Sprints sp `;
+
+              if (obj && obj.role && obj.role !== "admin") {
+                sprint_query =
+                  sprint_query + ` where sp.projectID = '${obj.projectId}' `;
+              }
+
+              sprint_query = sprint_query + ` order by sp.sprintID; `;
+
+              connection.query(sprint_query, (sprint_err, sprint_result) => {
+                if (sprint_err) {
+                  response("19");
                 } else {
-                  user_obj.push(user);
+                  if (sprint_result && sprint_result.length) {
+                    let sprint_obj = [{ id: "", name: "Select a Sprint" }];
+
+                    Object.values(sprint_result).forEach((value) => {
+                      let sprint = {
+                        id: value["sprintID"],
+                        name: value["sprintname"],
+                      };
+                      sprint_obj.push(sprint);
+                    });
+                    output["sprint"] = sprint_obj;
+                  }
                 }
               });
-              output["user"] = user_obj;
+              connection.release();
+              response(output);
+            } else {
+              connection.release();
+              response(output);
             }
           }
-          response(output);
         });
-      } else {
-        response(output);
       }
-    }
-  });
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const delete_task = (taskid, response) => {
   let comment_query = `delete from Comments where taskid = (select taskid from Tasks where taskid = ${taskid});`;
 
-  connect.query(comment_query, (comment_err, comment_result) => {
-    if (comment_err) {
+  db.getConnection((err, connection) => {
+    if (err) {
       response("19");
-      return;
     } else {
-      let task_query = `delete from Tasks where taskid = ${taskid};`;
-
-      connect.query(task_query, (task_err, task_result) => {
-        if (task_err) {
+      connection.query(comment_query, (comment_err, comment_result) => {
+        if (comment_err) {
           response("19");
+          return;
         } else {
-          response("29");
+          let task_query = `delete from Tasks where taskid = ${taskid};`;
+
+          connection.query(task_query, (task_err, task_result) => {
+            if (task_err) {
+              response("19");
+            } else {
+              connection.release();
+              response("29");
+            }
+          });
         }
       });
     }
@@ -276,14 +364,21 @@ function updateQuery(task_obj) {
 function insert_comment(task_obj, commentRes) {
   try {
     if (task_obj.comment && task_obj.comment !== "") {
-      let comment_query = `insert into Comments (comment, taskid, createdDate) values 
-                        ('${task_obj.comment}', '${task_obj.taskid}', now());`;
+      let comment_query = `insert into Comments (comment, taskid, createdDate, userid) values 
+                        ('${task_obj.comment}', '${task_obj.taskid}', now(), '${task_obj.userId}');`;
 
-      connect.query(comment_query, (comment_err, comment_result) => {
-        if (comment_err) {
+      db.getConnection((err, connection) => {
+        if (err) {
           commentRes("err");
         } else {
-          commentRes("32");
+          connection.query(comment_query, (comment_err, comment_result) => {
+            if (comment_err) {
+              commentRes("err");
+            } else {
+              connection.release();
+              commentRes("32");
+            }
+          });
         }
       });
     } else {
@@ -302,11 +397,18 @@ const put_task = (task_obj, response) => {
 
     let update_task_query = updateQuery(task_obj);
 
-    connect.query(update_task_query, (update_err, update_result) => {
-      if (update_err) {
+    db.getConnection((err, connection) => {
+      if (err) {
         response("19");
       } else {
-        response("30");
+        connection.query(update_task_query, (update_err, update_result) => {
+          if (update_err) {
+            response("19");
+          } else {
+            connection.release();
+            response("30");
+          }
+        });
       }
     });
   } catch (e) {
@@ -316,6 +418,7 @@ const put_task = (task_obj, response) => {
 
 module.exports.post_task = post_task;
 module.exports.get_task = get_task;
-module.exports.get_user_rel_details = get_user_rel_details;
+module.exports.get_user_proj_list = get_user_proj_list;
+module.exports.get_proj_rel_dtls = get_proj_rel_dtls;
 module.exports.put_task = put_task;
 module.exports.delete_task = delete_task;

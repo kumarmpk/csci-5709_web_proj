@@ -13,7 +13,7 @@ router.get("/addmember/:teamID", teamController.getAllMembers);
 router.get("/addtoteam", teamController.getNotMembers);
 router.delete("/deleteteam/:id", teamController.deleteTeam);
 router.delete("/deletemember/:tid/:uid", teamController.deleteMember);
-router.get("/getteamproject", teamController.getAllProjects);
+router.get("/getteamproject/:uId", teamController.getAllProjects);
 
 //post api to add member
 router.post("/addtoteam", (req, res) => {
