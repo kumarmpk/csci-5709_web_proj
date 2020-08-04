@@ -8,6 +8,14 @@ import auth from "../auth";
 import CONST from "../constants";
 
 class Login extends Component {
+  constructor(props) {
+    super(props);
+
+    if (localStorage.getItem("authenticated") !== null) {
+      this.props.history.push("/create");
+    }
+  }
+
   state = {
     email: "",
     emailError: "",
@@ -150,8 +158,7 @@ class Login extends Component {
                       </button>
                       <p />
                       <p className="forgot-password text-left">
-                        Forgot password?{" "}
-                        <a href="/resetpassword"> Reset password</a>
+                        Forgot password? <a href="/otp"> Reset password</a>
                       </p>
                       <p className="register text-left">
                         Don't have account?

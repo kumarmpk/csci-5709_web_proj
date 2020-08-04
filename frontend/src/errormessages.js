@@ -43,4 +43,11 @@ module.exports = {
   "34": "Password updated successfully",
   "35":
     "User is not yet mapped to any project or team. Kindly use projects page to add the user to a project and teams page to add the user to a team before creating or viewing a task.",
+  "36": "No records found with the key word",
+  "37": "Records found successfully",
+  "38": "Otp inserted successfully",
+  "39": "Otp insertion failed",
+  "40": "Otp validated successfully",
+  "41": "Otp validation failed",
+  "42": "OTP entered does not match with the sent OTP"
 };
