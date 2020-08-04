@@ -16,8 +16,9 @@ import { Sprints, Tasks } from './Sprints'
 class SprintManagement extends Component {
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
-      projectID: 1,
+      projectID: Number(props.match.params.projectID),
       Sprints: [],
       Tasks: [],
       ActiveSprintAvailable: false,

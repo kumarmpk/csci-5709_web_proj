@@ -175,7 +175,7 @@ class Routes extends Component {
               path="/register"
               render={(props) => <Register {...props}></Register>}
             ></Route>
-            <Route path="/sprint" component={SprintManagement}></Route>
+            <Route path="/sprint/:projectID" component={SprintManagement}></Route>
             <Route path="/about-us" component={AboutUs}></Route>
             <Route path="/contact-us" component={ContactUs}></Route>
 
