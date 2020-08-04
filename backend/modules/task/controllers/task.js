@@ -166,12 +166,10 @@ const get_user_proj_list = (obj, response) => {
 
     db.getConnection((err, connection) => {
       if (err) {
-        console.log(err);
         response("19");
       } else {
         connection.query(proj_query, (proj_err, proj_result) => {
           if (proj_err) {
-            console.log(proj_err);
             response("19");
           } else {
             if (proj_result && proj_result.length) {
@@ -196,7 +194,7 @@ const get_user_proj_list = (obj, response) => {
       }
     });
   } catch (e) {
-    console.log(e);
+    response("19");
   }
 };
 
@@ -276,7 +274,7 @@ const get_proj_rel_dtls = (obj, response) => {
       }
     });
   } catch (e) {
-    console.log(e);
+    response("19");
   }
 };
 

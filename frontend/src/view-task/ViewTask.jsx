@@ -283,8 +283,6 @@ class ViewTask extends Component {
         "Access-Control-Allow-Origin": "*",
       };
 
-      console.log("backendObj", backendObj);
-
       let encryp_backendObj = this.encrypFunc(backendObj);
 
       let url = CONST.URL + "task";

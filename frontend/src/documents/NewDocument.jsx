@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
+import CONST from "../constants";
 
 const initialState = {
   documentName: "",
@@ -30,6 +31,7 @@ class NewDocument extends Component {
       var config = {
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
         },
       };
 
@@ -37,12 +39,11 @@ class NewDocument extends Component {
         documentName: this.state.documentName,
         documentText: this.state.documentText,
       };
+      let url = CONST.URL + "docs/createdoc";
 
-      axios
-        .post("http://localhost:4000/docs/createdoc", userData, config)
-        .then((res) => {
-          console.log(res);
-        });
+      axios.post(url, userData, config).then((res) => {
+        console.log(res);
+      });
 
       this.setState(initialState);
       this.handleModal();

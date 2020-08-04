@@ -76,16 +76,12 @@ class CreateTask extends Component {
       loading: true,
     });
 
-    console.log(this.state);
-
     let url =
       CONST.URL + `task/user/${this.state.userId}/${this.state.userRole}`;
     await axios
       .get(url, config)
       .then((res) => {
         let obj = this.decryptFunc(res.data);
-
-        console.log("obj", obj);
 
         if (!obj || Object.keys(obj).length === 0) {
           this.setState({
@@ -102,7 +98,6 @@ class CreateTask extends Component {
         });
       })
       .catch((err) => {
-        console.log("err", err);
         this.setState({
           loading: false,
           errorMsg: errMsg["11"],
@@ -271,8 +266,6 @@ class CreateTask extends Component {
       [name]: value,
       validationErrorFlag: false,
     });
-
-    console.log(name, value);
 
     if (name === "project") {
       this.getProjectSpecificDetails(value);
