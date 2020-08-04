@@ -3,7 +3,7 @@ import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import Login from "./login/Login";
 import LandingPage from "./landing-page/LandingPage";
 import Register from "./register/Register";
-
+import Otp from "./reset-password/Otp";
 import Home from "./common-components/Home";
 import { ProtectedRoute } from "./ProtectedRoute";
 import ResetPassword from "./reset-password/ResetPassword";
