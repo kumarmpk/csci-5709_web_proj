@@ -2,17 +2,17 @@
 //  Banner Id:  B00845029
 //  javascript file for sprint management page
 
-import React, { Component } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import React, { Component } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
-import Cont from "../constants"
+import Cont from "../constants";
 
 import "./SprintManagement.css";
 import axios from "axios";
 
-import { Sprints, Tasks } from './Sprints'
+import { Sprints, Tasks } from "./Sprints";
 
 class SprintManagement extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class SprintManagement extends Component {
       editSprintModalFlag: false,
       editActiveSprintModalFlag: false,
       errorMsg: "",
-      serverURL: Cont.URL+"sprint/",
+      serverURL: Cont.URL + "sprint/",
       corsHeader: {
         headers: {
           "Content-Type": "application/json",
@@ -120,8 +120,8 @@ class SprintManagement extends Component {
 
   //delete sprint
   handleDeleteSprintModalConfirm = (e) => {
-    let stemp = []
-    let ttemp = []
+    let stemp = [];
+    let ttemp = [];
     axios
       .post(
         this.state.serverURL + "delete",
@@ -133,52 +133,52 @@ class SprintManagement extends Component {
       )
       .then((response) => {
         //fetch sprint
-       return axios
-          .post(
-            this.state.serverURL + "getSprint",
-            { projectID: this.state.projectID },
-            this.state.corsHeader
-          )
+        return axios.post(
+          this.state.serverURL + "getSprint",
+          { projectID: this.state.projectID },
+          this.state.corsHeader
+        );
       })
       .then((response1) => {
-            
-            stemp = response1.data["data"];
+        stemp = response1.data["data"];
 
-            //fetch task
-            return axios
-              .post(
-                this.state.serverURL + "getTask",
-                { projectID: this.state.projectID },
-                this.state.corsHeader
-              )
-          })
-          .then((response2) => {
-                  ttemp = response2.data["data"];
-              })
+        //fetch task
+        return axios.post(
+          this.state.serverURL + "getTask",
+          { projectID: this.state.projectID },
+          this.state.corsHeader
+        );
+      })
+      .then((response2) => {
+        ttemp = response2.data["data"];
+      })
       .catch((error2) => {
         this.setState({
           errorMsg: error2.response.data.msg,
         });
       })
-      .finally(() => (
-          this.setState({
-              Sprints: stemp,
-              Tasks: ttemp,
+      .finally(() =>
+        this.setState(
+          {
+            Sprints: stemp,
+            Tasks: ttemp,
             editSprintName: "",
             editSprintDescription: "",
             editSprintStartDate: "",
             editSprintEndDate: "",
             ActiveSprintAvailable: false,
             deleteSprintModalFlag: false,
-          }, () => this.setActiveSprintData()))
+          },
+          () => this.setActiveSprintData()
+        )
       );
   };
 
   handleDeleteSprintModalOpen = (sprintID) => {
-      this.setState({
-        editSprintIDModelSelected: sprintID,
-        deleteSprintModalFlag: true,
-      });
+    this.setState({
+      editSprintIDModelSelected: sprintID,
+      deleteSprintModalFlag: true,
+    });
   };
 
   handleDeleteSprintModalClose = () => {
@@ -189,7 +189,6 @@ class SprintManagement extends Component {
 
   //Edit
   handleEditSprintModalUpdate = () => {
-
     axios
       .put(
         this.state.serverURL + "modifySprint",
@@ -372,7 +371,7 @@ class SprintManagement extends Component {
           enddate: this.state.editSprintEndDate,
           projectID: this.state.projectID,
           sprintID: this.state.editSprintIDModelSelected,
-          duration: null
+          duration: null,
         },
         this.state.corsHeader
       )
@@ -446,7 +445,11 @@ class SprintManagement extends Component {
     axios
       .post(
         this.state.serverURL + "create",
-        { sprintname: this.state.editSprintName, description: this.state.editSprintDescription, projectID: this.state.projectID},
+        {
+          sprintname: this.state.editSprintName,
+          description: this.state.editSprintDescription,
+          projectID: this.state.projectID,
+        },
         this.state.corsHeader
       )
       .then((response) => {
@@ -499,7 +502,10 @@ class SprintManagement extends Component {
     axios
       .put(
         this.state.serverURL + "endSprint",
-        { sprintID: this.state.ActiveSprintID, projectID: this.state.projectID },
+        {
+          sprintID: this.state.ActiveSprintID,
+          projectID: this.state.projectID,
+        },
         this.state.corsHeader
       )
       .then((response) => {
@@ -551,16 +557,16 @@ class SprintManagement extends Component {
         });
       });
 
-      this.setState({
-        editSprintName: "",
-        editSprintDescription: "",
-        editSprintStartDate: "",
-        editSprintEndDate: "",
-        ActiveSprintAvailable: false,
-        ActiveSprintOrder: null,
-        ActiveSprintID: null,
-        startSprintModalFlag: false,
-      });
+    this.setState({
+      editSprintName: "",
+      editSprintDescription: "",
+      editSprintStartDate: "",
+      editSprintEndDate: "",
+      ActiveSprintAvailable: false,
+      ActiveSprintOrder: null,
+      ActiveSprintID: null,
+      startSprintModalFlag: false,
+    });
   };
 
   //Drag and drop
@@ -698,20 +704,13 @@ class SprintManagement extends Component {
     if (this.state.loading) {
       return <section>Fetching Data</section>;
     }
-    //console.log(
-      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      this.state.ActiveSprintAvailable
-    );
+
     return (
       <section>
         {this.state.ActiveSprintAvailable == true ? (
           <section className="row mt-4 mx-4">
             <section className="col-12">
               <section className="sprint border rounded p-2">
-                {//console.log(
-                  "latest$$$$$$$$$$$$$$$$$$$$$ ",
-                  this.state.ActiveSprintAvailable
-                )}
                 <span className="task-header">
                   Active Sprint:
                   {this.state.ActiveSprintAvailable
@@ -858,12 +857,7 @@ class SprintManagement extends Component {
                   >
                     Edit
                   </button>
-                  {//console.log(
-                    "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  " +
-                      this.state.MinOrder +
-                      "    " +
-                      Sprint["order"]
-                  )}
+
                   {this.state.ActiveSprintAvailable == false &&
                   Sprint["order"] == this.state.MinOrder ? (
                     <button
@@ -1136,10 +1130,6 @@ class SprintManagement extends Component {
         </Modal>
 
         <Modal show={this.state.startSprintModalFlag} centered>
-          {//console.log(
-            "##################################",
-            this.state.MinOrder
-          )}
           <Modal.Header closeButton>
             <Modal.Title>Start Sprint</Modal.Title>
           </Modal.Header>
@@ -1219,7 +1209,7 @@ class SprintManagement extends Component {
               Close
             </Button>
           </Modal.Footer>
-        </Modal>   
+        </Modal>
       </section>
     );
   }
