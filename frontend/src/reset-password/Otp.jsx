@@ -115,7 +115,6 @@ class Otp extends Component {
       .post(url, { data: userData }, config)
       .then((res) => {
         if (res["status"] === 200) {
-
           const errors = {
             commonError: "",
           };
@@ -212,7 +211,7 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateInputs();
-    if (isErrorPresent == false) {
+    if (!isErrorPresent) {
       this.resetPassword();
     }
   };
@@ -221,7 +220,7 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateEmail();
-    if (isErrorPresent == false) {
+    if (!isErrorPresent) {
       this.createOtp();
     }
   };
@@ -230,7 +229,7 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateOtp();
-    if (isErrorPresent == false) {
+    if (!isErrorPresent) {
       this.verifyOtpValue();
     }
   };

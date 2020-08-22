@@ -4,7 +4,7 @@ import "../view-project/ViewProject.css";
 import errMsg from "../errormessages";
 import "./CreateProject.css";
 import DatePicker from "react-date-picker";
-import { Dropdown, Card, Modal, Button } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import TeamDummyData from "./TeamDummyData";
 import CONST from "../constants";
 
@@ -85,8 +85,7 @@ class CreateProject extends Component {
         .then((res) => {
           history.push("/home");
         })
-        .catch(({ response }) => {
-        });
+        .catch(({ response }) => {});
     } else {
       //form error is set here
       this.setState({

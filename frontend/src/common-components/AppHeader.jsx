@@ -7,7 +7,11 @@ import "../common-css/styles.css";
 class AppHeader extends Component {
   constructor(props) {
     super(props);
+
+    console.log("props history", this.props);
+
     var { isVisible } = props;
+
     this.state = {
       search: "",
       isVisible: isVisible,

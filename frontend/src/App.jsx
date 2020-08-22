@@ -16,7 +16,6 @@ import Search from "./search/Search";
 import CreateTask from "./create-task/CreateTask";
 import Dashboard from "./dashboard/Dashboard";
 import Users from "./users/Users";
-import Sidebar from "../src/common-components/Sidebar";
 import AppHeader from "../src/common-components/AppHeader";
 import HomePageHeader from "../src/common-components/HomePageHeader";
 import Announcement from "../src/announcement/Announcement";
@@ -36,11 +35,7 @@ import SprintManagement from "./sprint-management/SprintManagement";
 class Routes extends Component {
   constructor(props) {
     super(props);
-    const { history } = props;
-    var isVisible = false;
-    if (history.location.pathname === "/") {
-      isVisible = true;
-    }
+
     this.state = {
       SideBarPath: [
         "/",
@@ -51,17 +46,21 @@ class Routes extends Component {
         "/contact-us",
         "/otp",
       ],
-      isVisible: isVisible,
     };
   }
 
   render() {
-
     const { SideBarPath } = this.state;
     const {
       location: { pathname },
     } = this.props;
     const isAuthenticated = SideBarPath.includes(pathname);
+
+    var isVisible = false;
+    const { history } = this.props;
+    if (history.location.pathname === "/") {
+      isVisible = true;
+    }
 
     return (
       <article className="">
@@ -71,7 +70,7 @@ class Routes extends Component {
 
         {isAuthenticated ? (
           <header className={isAuthenticated ? null : "margin-col-content"}>
-            <AppHeader isVisible={this.state.isVisible} />
+            <AppHeader isVisible={isVisible} />
           </header>
         ) : (
           <header
@@ -179,7 +178,10 @@ class Routes extends Component {
               path="/register"
               render={(props) => <Register {...props}></Register>}
             ></Route>
-            <Route path="/sprint/:projectID" component={SprintManagement}></Route>
+            <Route
+              path="/sprint/:projectID"
+              component={SprintManagement}
+            ></Route>
             <Route path="/about-us" component={AboutUs}></Route>
             <Route path="/contact-us" component={ContactUs}></Route>
 

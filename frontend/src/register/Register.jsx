@@ -98,7 +98,7 @@ class Register extends Component {
 
     let url = CONST.URL + "register";
 
-    const res = await axios.post(url, { data: userData }, config);
+    await axios.post(url, { data: userData }, config);
 
     this.props.history.push("/login");
   };

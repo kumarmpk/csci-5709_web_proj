@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./Projects.css";
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown } from "react-bootstrap";
 import ProjectDummyData from "./ProjectDummyData";
 import CONST from "../constants";
 
@@ -22,8 +21,8 @@ export class Projects extends Component {
 
   fetchProjects(projectName) {
     const URL = CONST.URL + "project/getProjects";
-    const user_id = localStorage.getItem("userid"); 
-    
+    const user_id = localStorage.getItem("userid");
+
     axios
       .get(URL, {
         params: { projectName, user_id },
@@ -35,8 +34,7 @@ export class Projects extends Component {
       .then((res) => {
         this.setState({ filteredProjects: res.data });
       })
-      .catch(({ response }) => {
-      });
+      .catch(({ response }) => {});
   }
 
   onTextChanged = (e) => {
@@ -46,19 +44,19 @@ export class Projects extends Component {
 
   searchForProjects = (value) => {
     let temp = [];
-    let abs =
-      ProjectDummyData.length > 0
-        ? ProjectDummyData.map((obj, key) => {
-            if (obj.projectName.toLowerCase().includes(value)) {
-              temp.push(obj);
-            }
-          })
-        : null;
+
+    if (ProjectDummyData.length > 0) {
+      for (let obj in ProjectDummyData) {
+        if (obj.projectName.toLowerCase().includes(value)) {
+          temp.push(obj);
+        }
+      }
+    }
     this.setState(() => ({ filteredProjects: temp }));
   };
 
   displayProjTable = () => {
-    const {history} = this.props
+    const { history } = this.props;
     return this.state.filteredProjects.length > 0 ? (
       <div className="col-12 col-sm-12">
         <table className="table table-hover">
@@ -73,7 +71,7 @@ export class Projects extends Component {
           <tbody>
             {this.state.filteredProjects.map((data) => {
               return (
-                <tr onClick={()=> history.push(`/sprint/${data.projectID}`)}>
+                <tr onClick={() => history.push(`/sprint/${data.projectID}`)}>
                   <th>{data.projectName}</th>
                   <td>{data.manager || "-"}</td>
                   <td>{data.teamName || "-"}</td>

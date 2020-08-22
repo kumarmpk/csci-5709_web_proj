@@ -3,16 +3,10 @@
 //  javascript file for sprint management page
 
 import React, { Component } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
 import Cont from "../constants";
-
 import "./SprintManagement.css";
 import axios from "axios";
-
-import { Sprints, Tasks } from "./Sprints";
 
 class SprintManagement extends Component {
   constructor(props) {
@@ -94,8 +88,9 @@ class SprintManagement extends Component {
       let minOrder = this.state.Sprints[0]["order"];
       let change = false;
       let newData = {};
-      this.state.Sprints.map((Sprint) => {
-        if (Sprint["isComplete"] == 0) {
+
+      for (let Sprint in this.state.Sprints) {
+        if (Sprint["isComplete"] === 0) {
           newData["ActiveSprintAvailable"] = true;
           newData["ActiveSprintOrder"] = Sprint["order"];
           newData["ActiveSprintID"] = Sprint["sprintID"];
@@ -104,7 +99,7 @@ class SprintManagement extends Component {
         if (minOrder > Sprint["order"]) {
           minOrder = Sprint["order"];
         }
-      });
+      }
 
       if (!change) {
         newData["ActiveSprintAvailable"] = false;
@@ -698,7 +693,7 @@ class SprintManagement extends Component {
   };
 
   render() {
-    if (this.state.errorMsg != "") {
+    if (this.state.errorMsg !== "") {
       alert(this.state.errorMsg);
     }
     if (this.state.loading) {
@@ -707,7 +702,7 @@ class SprintManagement extends Component {
 
     return (
       <section>
-        {this.state.ActiveSprintAvailable == true ? (
+        {this.state.ActiveSprintAvailable ? (
           <section className="row mt-4 mx-4">
             <section className="col-12">
               <section className="sprint border rounded p-2">
@@ -756,8 +751,8 @@ class SprintManagement extends Component {
                 }
               >
                 {this.state.Tasks.map((Task) =>
-                  Task["sprintid"] == this.state.ActiveSprintID &&
-                  Task["status"] == null ? (
+                  Task["sprintid"] === this.state.ActiveSprintID &&
+                  Task["status"] === null ? (
                     <section
                       className="task draggable"
                       onDragStart={(e) => this.onDragStart(e, Task["taskid"])}
@@ -781,8 +776,8 @@ class SprintManagement extends Component {
                 }
               >
                 {this.state.Tasks.map((Task) =>
-                  Task["sprintid"] == this.state.ActiveSprintID &&
-                  Task["status"] == 0 ? (
+                  Task["sprintid"] === this.state.ActiveSprintID &&
+                  Task["status"] === 0 ? (
                     <section
                       className="task draggable"
                       onDragStart={(e) => this.onDragStart(e, Task["taskid"])}
@@ -806,8 +801,8 @@ class SprintManagement extends Component {
                 }
               >
                 {this.state.Tasks.map((Task) =>
-                  Task["sprintid"] == this.state.ActiveSprintID &&
-                  Task["status"] == 1 ? (
+                  Task["sprintid"] === this.state.ActiveSprintID &&
+                  Task["status"] === 1 ? (
                     <section
                       className="task draggable"
                       onDragStart={(e) => this.onDragStart(e, Task["taskid"])}
@@ -858,8 +853,8 @@ class SprintManagement extends Component {
                     Edit
                   </button>
 
-                  {this.state.ActiveSprintAvailable == false &&
-                  Sprint["order"] == this.state.MinOrder ? (
+                  {this.state.ActiveSprintAvailable === false &&
+                  Sprint["order"] === this.state.MinOrder ? (
                     <button
                       type="button"
                       className="mr-2 float-right"
@@ -877,7 +872,7 @@ class SprintManagement extends Component {
                   onDrop={(e) => this.onDrop(e, Sprint["sprintID"])}
                 >
                   {this.state.Tasks.map((Task) =>
-                    Task["sprintid"] == Sprint["sprintID"] ? (
+                    Task["sprintid"] === Sprint["sprintID"] ? (
                       <section
                         className="task draggable"
                         onDragStart={(e) => this.onDragStart(e, Task["taskid"])}
