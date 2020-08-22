@@ -66,8 +66,7 @@ class Documents extends Component {
     };
     let url = CONST.URL + "docs/deletedoc/" + id;
 
-    axios.delete(url, config).then((res) => {
-    });
+    axios.delete(url, config).then((res) => {});
 
     this.handleModal();
   };
@@ -169,7 +168,8 @@ class Documents extends Component {
                     <Modal.Footer>
                       {" "}
                       <button
-                        className="btn btn-info"
+                        className="btn btn-primary"
+                        style={{ background: "#2888d1" }}
                         onClick={this.handleModal}
                       >
                         Close

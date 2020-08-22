@@ -144,14 +144,16 @@ class ViewProject extends Component {
                   <button
                     onClick={this.handleDelete}
                     type="submit"
-                    className="viewProjectbutton btn btn-info "
+                    className="viewProjectbutton btn btn-primary"
+                    style={{ background: "#2888d1" }}
                   >
                     Delete
                   </button>
                   <button
                     onClick={this.handleClose}
                     type="submit"
-                    className=" viewProjectbutton btn btn-info "
+                    className=" viewProjectbutton btn btn-primary"
+                    style={{ background: "#2888d1" }}
                   >
                     Close
                   </button>
@@ -160,8 +162,6 @@ class ViewProject extends Component {
             </section>
           </section>
         </section>
-
-        
       </article>
     );
   }

@@ -698,7 +698,8 @@ class ViewTask extends Component {
                         <button
                           onClick={this.onUpdate}
                           type="submit"
-                          className="btn btn-info btn-centre mt-4"
+                          className="btn btn-primary btn-centre mt-4"
+                          style={{ background: "#2888d1" }}
                         >
                           Update
                         </button>
@@ -706,7 +707,8 @@ class ViewTask extends Component {
                           <button
                             onClick={this.onDelete}
                             type="submit"
-                            className="btn btn-info btn-centre ml-3 mt-4"
+                            className="btn btn-primary btn-centre ml-3 mt-4"
+                            style={{ background: "#2888d1" }}
                           >
                             Delete
                           </button>
@@ -714,7 +716,8 @@ class ViewTask extends Component {
                         <button
                           onClick={this.onClose}
                           type="submit"
-                          className="btn btn-info btn-centre ml-3 mt-4"
+                          className="btn btn-primary btn-centre ml-3 mt-4"
+                          style={{ background: "#2888d1" }}
                         >
                           Close
                         </button>
@@ -782,7 +785,11 @@ class ViewTask extends Component {
               </Modal.Header>
               <Modal.Body>{this.state.modalMsg}</Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={this.handleModalClose}>
+                <Button
+                  className="btn btn-primary"
+                  style={{ background: "#2888d1" }}
+                  onClick={this.handleModalClose}
+                >
                   Close
                 </Button>
               </Modal.Footer>
@@ -798,7 +805,11 @@ class ViewTask extends Component {
               </Modal.Header>
               <Modal.Body>The details are loading please wait....</Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={this.handleLoadingClose}>
+                <Button
+                  className="btn btn-primary"
+                  style={{ background: "#2888d1" }}
+                  onClick={this.handleLoadingClose}
+                >
                   Close
                 </Button>
               </Modal.Footer>

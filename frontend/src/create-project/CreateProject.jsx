@@ -204,13 +204,15 @@ class CreateProject extends Component {
                   <section className="row justify-content-center">
                     <button
                       onClick={this.handleCreate}
-                      className="createProjectbutton btn btn-info col-7 m-2 text-center"
+                      className="createProjectbutton btn btn-primary col-7 m-2 text-center"
+                      style={{ background: "#2888d1" }}
                     >
                       Create
                     </button>
                     <button
                       onClick={this.handleClose}
-                      className="createProjectbutton btn btn-info col-4 m-2 text-center"
+                      className="createProjectbutton btn btn-primary col-4 m-2 text-center"
+                      style={{ background: "#2888d1" }}
                     >
                       Close
                     </button>

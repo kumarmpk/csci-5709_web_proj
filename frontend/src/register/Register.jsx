@@ -203,7 +203,7 @@ class Register extends Component {
                       <button
                         onClick={this.btnClick}
                         type="submit"
-                        className="btn btn-info btn-centre"
+                        className="btn btn-primary btn-centre"
                         style={{ background: "#2888d1" }}
                       >
                         Sign up

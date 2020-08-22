@@ -379,7 +379,8 @@ class Create extends Component {
                       <button
                         onClick={this.onCreate}
                         type="submit"
-                        className="btn btn-info btn-centre"
+                        className="btn btn-primary"
+                        style={{ background: "#2888d1" }}
                       >
                         Create
                       </button>
@@ -399,7 +400,11 @@ class Create extends Component {
             tracked by the Id: {this.state.Id}.
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleModalClose}>
+            <Button
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
+              onClick={this.handleModalClose}
+            >
               Close
             </Button>
           </Modal.Footer>

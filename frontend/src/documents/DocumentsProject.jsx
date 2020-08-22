@@ -134,7 +134,8 @@ class DocumentsProject extends Component {
 
                   {this.state.show2 && (
                     <button
-                      className="btn btn-info"
+                      className="btn btn-primary"
+                      style={{ background: "#2888d1" }}
                       type="submit"
                       onClick={this.setVarVal()}
                     >

@@ -41,8 +41,7 @@ class NewDocument extends Component {
       };
       let url = CONST.URL + "docs/createdoc";
 
-      axios.post(url, userData, config).then((res) => {
-      });
+      axios.post(url, userData, config).then((res) => {});
 
       this.setState(initialState);
       this.handleModal();
@@ -156,8 +155,8 @@ class NewDocument extends Component {
                   <button
                     type="submit"
                     value="Submit"
-                    className="btn btn-info"
-                    style={{ marginBottom: "2em" }}
+                    className="btn btn-primary"
+                    style={{ marginBottom: "2em", background: "#2888d1" }}
                   >
                     {" "}
                     Create
@@ -177,7 +176,11 @@ class NewDocument extends Component {
                   </Modal.Body>
                   <Modal.Footer>
                     {" "}
-                    <button className="btn btn-info" onClick={this.handleModal}>
+                    <button
+                      className="btn btn-primary"
+                      style={{ background: "#2888d1" }}
+                      onClick={this.handleModal}
+                    >
                       Close
                     </button>
                   </Modal.Footer>

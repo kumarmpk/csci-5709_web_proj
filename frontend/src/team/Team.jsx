@@ -109,7 +109,10 @@ class Team extends Component {
                             <th className="teamThTd">{team.teamName}</th>
 
                             <th className="teamThTd">
-                              <button className="btn btn-info">
+                              <button
+                                className="btn btn-danger"
+                                style={{ background: "#2888d1" }}
+                              >
                                 <a
                                   className="teambutton"
                                   href={"/teams/addmember/" + team.teamID}
@@ -159,7 +162,8 @@ class Team extends Component {
                     <Modal.Footer>
                       {" "}
                       <button
-                        className="btn btn-info"
+                        className="btn btn-danger"
+                        style={{ background: "#2888d1" }}
                         onClick={this.handleModal}
                       >
                         Close

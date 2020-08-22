@@ -111,7 +111,12 @@ class AddPeople extends Component {
                         <th className="teamThTd">{user.userName}</th>
                         <th className="teamThTd">
                           <form onSubmit={this.btnDeleteMem(user.userID)}>
-                            <button className="btn btn-danger">Delete</button>
+                            <button
+                              className="btn btn-danger"
+                              style={{ background: "#2888d1" }}
+                            >
+                              Delete
+                            </button>
                           </form>
                         </th>
                       </tr>
@@ -119,7 +124,11 @@ class AddPeople extends Component {
                   </tbody>
                 </table>
                 <br />
-                <button className="btn btn-info" type="button">
+                <button
+                  className="btn btn-danger"
+                  style={{ background: "#2888d1" }}
+                  type="button"
+                >
                   <a className="teambutton" href="/teams/addtoteam">
                     Add Member{" "}
                   </a>{" "}
@@ -141,7 +150,8 @@ class AddPeople extends Component {
                     <Modal.Footer>
                       {" "}
                       <button
-                        className="btn btn-info"
+                        className="btn btn-danger"
+                        style={{ background: "#2888d1" }}
                         onClick={this.handleModal}
                       >
                         Close

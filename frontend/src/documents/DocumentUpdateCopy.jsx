@@ -48,8 +48,7 @@ class DocumentUpdate extends Component {
 
       axios
         .put("http://localhost:4000/docs/updatedocs/" + docID, userData, config)
-        .then((res) => {
-        });
+        .then((res) => {});
 
       this.setState(initialState);
       this.handleModal();
@@ -65,7 +64,6 @@ class DocumentUpdate extends Component {
 
   handleDelete = (e) => {
     e.preventDefault();
-
 
     const docID = this.getParam();
 
@@ -159,7 +157,6 @@ class DocumentUpdate extends Component {
         docText: res.data.documentText,
       });
     });
-
   }
   render() {
     return (
@@ -217,23 +214,23 @@ class DocumentUpdate extends Component {
                 <div className="format">
                   <button
                     onClick={this.handleUpdate}
-                    className="btn btn-info"
-                    style={{ marginBottom: "2em" }}
+                    className="btn btn-primary"
+                    style={{ marginBottom: "2em", background: "#2888d1" }}
                   >
                     {" "}
                     Update
                   </button>
                   <button
                     onClick={this.handleDelete}
-                    className="btn btn-info ml-2"
-                    style={{ marginBottom: "2em" }}
+                    className="btn btn-primary ml-2"
+                    style={{ marginBottom: "2em", background: "#2888d1" }}
                   >
                     {" "}
                     Delete
                   </button>
                   <button
-                    className="btn btn-info ml-2"
-                    style={{ marginBottom: "2em" }}
+                    className="btn btn-primary ml-2"
+                    style={{ marginBottom: "2em", background: "#2888d1" }}
                   >
                     {" "}
                     <a style={{ color: "white" }} href="/docs/getprojectdocs">
@@ -255,7 +252,11 @@ class DocumentUpdate extends Component {
                   </Modal.Body>
                   <Modal.Footer>
                     {" "}
-                    <button className="btn btn-info" onClick={this.handleModal}>
+                    <button
+                      className="btn btn-primary"
+                      style={{ background: "#2888d1" }}
+                      onClick={this.handleModal}
+                    >
                       Close
                     </button>
                   </Modal.Footer>

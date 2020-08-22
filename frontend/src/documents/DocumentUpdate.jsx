@@ -45,8 +45,7 @@ class DocumentUpdate extends Component {
       const docID = this.getParam();
       let url = CONST.URL + "docs/updatedocs/" + docID;
 
-      axios.put(url, userData, config).then((res) => {
-      });
+      axios.put(url, userData, config).then((res) => {});
 
       this.setState(initialState);
       this.handleModal();
@@ -204,8 +203,8 @@ class DocumentUpdate extends Component {
                   <button
                     type="submit"
                     value="Submit"
-                    className="btn btn-info"
-                    style={{ marginBottom: "2em" }}
+                    className="btn btn-primary"
+                    style={{ marginBottom: "2em", background: "#2888d1" }}
                   >
                     {" "}
                     Update
@@ -224,7 +223,11 @@ class DocumentUpdate extends Component {
                   <Modal.Body>Document has been updated! </Modal.Body>
                   <Modal.Footer>
                     {" "}
-                    <button className="btn btn-info" onClick={this.handleModal}>
+                    <button
+                      className="btn btn-primary"
+                      style={{ background: "#2888d1" }}
+                      onClick={this.handleModal}
+                    >
                       Close
                     </button>
                   </Modal.Footer>

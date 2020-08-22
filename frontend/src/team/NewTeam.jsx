@@ -165,7 +165,11 @@ class NewTeam extends Component {
                   <Modal.Body>Team has been successfully created! </Modal.Body>
                   <Modal.Footer>
                     {" "}
-                    <button className="btn btn-info" onClick={this.handleModal}>
+                    <button
+                      className="btn btn-danger"
+                      style={{ background: "#2888d1" }}
+                      onClick={this.handleModal}
+                    >
                       Close
                     </button>
                   </Modal.Footer>

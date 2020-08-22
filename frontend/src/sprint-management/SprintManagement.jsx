@@ -716,7 +716,8 @@ class SprintManagement extends Component {
                 </span>
                 <button
                   type="button"
-                  className="mr-2 float-right"
+                  className="btn btn-primary mr-2 float-right"
+                  style={{ background: "#2888d1" }}
                   onClick={() =>
                     this.handleDeleteSprintModalOpen(this.state.ActiveSprintID)
                   }
@@ -725,14 +726,16 @@ class SprintManagement extends Component {
                 </button>
                 <button
                   type="button"
-                  className="mr-2 float-right"
+                  className="btn btn-primary mr-2 float-right"
+                  style={{ background: "#2888d1" }}
                   onClick={() => this.handleEndActiveSprint()}
                 >
                   End Sprint
                 </button>
                 <button
                   type="button"
-                  className="mr-2 float-right"
+                  className="btn btn-primary mr-2 float-right"
+                  style={{ background: "#2888d1" }}
                   onClick={() => this.handleEditActiveSprintModalOpen()}
                 >
                   Edit
@@ -836,7 +839,8 @@ class SprintManagement extends Component {
                   /> */}
                   <button
                     type="button"
-                    className="mr-2 float-right"
+                    className="btn btn-primary mr-2 float-right"
+                    style={{ background: "#2888d1" }}
                     onClick={() =>
                       this.handleDeleteSprintModalOpen(Sprint["sprintID"])
                     }
@@ -845,7 +849,8 @@ class SprintManagement extends Component {
                   </button>
                   <button
                     type="button"
-                    className="mr-2 float-right"
+                    className="btn btn-primary mr-2 float-right"
+                    style={{ background: "#2888d1" }}
                     onClick={() =>
                       this.handleEditSprintModalOpen(Sprint["sprintID"])
                     }
@@ -857,7 +862,8 @@ class SprintManagement extends Component {
                   Sprint["order"] === this.state.MinOrder ? (
                     <button
                       type="button"
-                      className="mr-2 float-right"
+                      className="btn btn-primary mr-2 float-right"
+                      style={{ background: "#2888d1" }}
                       onClick={() =>
                         this.handleStartSprintModalOpen(Sprint["sprintID"])
                       }
@@ -895,7 +901,8 @@ class SprintManagement extends Component {
               <span className="task-header">Remaining Task/Issues</span>
               <button
                 type="button"
-                className="mr-2 float-right"
+                className="btn btn-primary mr-2 float-right"
+                style={{ background: "#2888d1" }}
                 onClick={this.handleCreateSprintModalOpen}
               >
                 Create Sprint
@@ -945,13 +952,15 @@ class SprintManagement extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleCreateSprintModalCreate}
             >
               Create
             </Button>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleCreateSprintModalClose}
             >
               Close
@@ -1000,13 +1009,15 @@ class SprintManagement extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleEditSprintModalUpdate}
             >
               Update
             </Button>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleEditSprintModalClose}
             >
               Close
@@ -1082,13 +1093,15 @@ class SprintManagement extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleEditActiveSprintModalUpdate}
             >
               Update
             </Button>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleEditActiveSprintModalClose}
             >
               Close
@@ -1110,13 +1123,15 @@ class SprintManagement extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleDeleteSprintModalConfirm}
             >
               Confirm
             </Button>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleDeleteSprintModalClose}
             >
               Close
@@ -1192,13 +1207,15 @@ class SprintManagement extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={() => this.handleStartSprintModalStart()}
             >
               Start
             </Button>
             <Button
-              variant="secondary"
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
               onClick={this.handleStartSprintModalClose}
             >
               Close

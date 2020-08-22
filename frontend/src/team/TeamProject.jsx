@@ -133,7 +133,8 @@ class TeamProject extends Component {
                   <br />
                   {this.state.show2 && (
                     <button
-                      className="btn btn-info"
+                      className="btn btn-danger"
+                      style={{ background: "#2888d1" }}
                       type="submit"
                       onClick={this.setVarVal()}
                     >

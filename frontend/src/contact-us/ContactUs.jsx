@@ -186,7 +186,11 @@ class ContactUs extends Component {
             </Modal.Header>
             <Modal.Body>The details are being sent please wait....</Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={this.handleLoadingClose}>
+              <Button
+                className="btn btn-primary"
+                style={{ background: "#2888d1" }}
+                onClick={this.handleLoadingClose}
+              >
                 Close
               </Button>
             </Modal.Footer>
@@ -271,7 +275,7 @@ class ContactUs extends Component {
                           <button
                             onClick={this.handleContactUs}
                             type="submit"
-                            className="btn btn-primary btn-centre align"
+                            className="btn btn-primary"
                             style={{ background: "#2888d1" }}
                           >
                             Submit
@@ -295,7 +299,11 @@ class ContactUs extends Component {
                     get back to you as soon as possible.
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button variant="secondary" onClick={this.handleModalClose}>
+                    <Button
+                      className="btn btn-primary"
+                      style={{ background: "#2888d1" }}
+                      onClick={this.handleModalClose}
+                    >
                       Close
                     </Button>
                   </Modal.Footer>

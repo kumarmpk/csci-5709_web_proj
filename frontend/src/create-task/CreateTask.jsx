@@ -536,13 +536,15 @@ class CreateTask extends Component {
                       <button
                         onClick={this.onCreate}
                         type="submit"
-                        className="btn btn-info btn-centre"
+                        className="btn btn-primary btn-centre"
+                        style={{ background: "#2888d1" }}
                       >
                         Create
                       </button>
                       <button
                         type="submit"
-                        className="btn btn-info btn-centre ml-2"
+                        className="btn btn-primary btn-centre ml-2"
+                        style={{ background: "#2888d1" }}
                       >
                         <a style={{ color: "white" }} href="/home">
                           {" "}
@@ -566,7 +568,11 @@ class CreateTask extends Component {
           </Modal.Header>
           <Modal.Body>{this.state.modalMsg}</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleModalClose}>
+            <Button
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
+              onClick={this.handleModalClose}
+            >
               Close
             </Button>
           </Modal.Footer>
@@ -582,7 +588,11 @@ class CreateTask extends Component {
           </Modal.Header>
           <Modal.Body>The details are loading please wait....</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleLoadingClose}>
+            <Button
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
+              onClick={this.handleLoadingClose}
+            >
               Close
             </Button>
           </Modal.Footer>

@@ -113,7 +113,11 @@ class Members extends Component {
                     </tbody>
                   </table>
                   <br />
-                  <button className="btn btn-info" type="submit">
+                  <button
+                    className="btn btn-danger"
+                    style={{ background: "#2888d1" }}
+                    type="submit"
+                  >
                     Add Member
                   </button>
                 </form>
@@ -133,7 +137,8 @@ class Members extends Component {
                     <Modal.Footer>
                       {" "}
                       <button
-                        className="btn btn-info"
+                        className="btn btn-danger"
+                        style={{ background: "#2888d1" }}
                         onClick={this.handleModal}
                       >
                         Close

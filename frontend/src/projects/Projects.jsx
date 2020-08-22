@@ -132,7 +132,11 @@ export class Projects extends Component {
           </div>
           <div className="pr-3 ml-auto">
             <Link to="/createproject">
-              <button className="createButton" name="Create Project">
+              <button
+                className="btn btn-primary"
+                style={{ background: "#2888d1" }}
+                name="Create Project"
+              >
                 Create Project
               </button>
             </Link>

@@ -75,10 +75,11 @@ class DocumentsProject extends Component {
                     <a
                       className="teambutton"
                       href="/docs/createdoc"
-                      className="btn btn-info"
+                      className="btn btn-primary"
                       style={{
                         marginTop: "1em",
                         marginBottom: "1em",
+                        background: "#2888d1",
                       }}
                     >
                       Create a new Document
