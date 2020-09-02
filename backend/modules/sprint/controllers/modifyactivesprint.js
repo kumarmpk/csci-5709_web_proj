@@ -2,7 +2,7 @@
 //  Banner Id:  B00845029
 //  ModifyActiveSprint API in Sprint Management and Task modification feature controller
 
-const connectionObject = require("../../../MySQLCon");
+const connection = require("../../../MySQLCon");
 
 var modifyActiveSprint = (req, res) => {
   if (
@@ -16,11 +16,9 @@ var modifyActiveSprint = (req, res) => {
     req.body["startdate"] == "" ||
     req.body["enddate"] == ""
   ) {
-    return res
-      .status(400)
-      .json({
-        msg: `Please include all mandatory details- sprintname, or deescrption, or startdate or enddate and projectID as well as sprintID`,
-      });
+    return res.status(400).json({
+      msg: `Please include all mandatory details- sprintname, or deescrption, or startdate or enddate and projectID as well as sprintID`,
+    });
   } else if (
     Number.isInteger(req.body["projectID"]) == false ||
     Number.isInteger(req.body["sprintID"]) == false ||
@@ -28,46 +26,36 @@ var modifyActiveSprint = (req, res) => {
     typeof req.body["startdate"] != "string" ||
     typeof req.body["enddate"] != "string"
   ) {
-    return res
-      .status(400)
-      .json({
-        msg: `Please enter valid projectID, sprintID, sprintname, startdate, and enddate`,
-      });
+    return res.status(400).json({
+      msg: `Please enter valid projectID, sprintID, sprintname, startdate, and enddate`,
+    });
   }
 
-  let whereSprintID = "WHERE sprintID = ? and projectID = ? and isComplete = ?";
-  let updateActiveSprint =
-    "UPDATE Sprints SET sprintname = ? , startdate = ?, enddate = ?, description = ? " +
-    whereSprintID;
-  let sprint_details = [
-    req.body.sprintname,
-    req.body.startdate,
-    req.body.enddate,
-    req.body.description,
-    req.body.sprintID,
-    req.body.projectID,
-    0,
-  ];
+  let updateActiveSprint = `UPDATE Sprints SET 
+                            sprintname = '${req.body.sprintname}' , startdate = '${req.body.startdate}',
+                            enddate = '${req.body.enddate}', description = '${req.body.description}'
+                            WHERE sprintID = '${req.body.sprintID}' and projectID = '${req.body.projectID}' and isComplete = 0`;
 
-  connectionObject.query(updateActiveSprint, sprint_details, (err, result) => {
-    if (err) {
-      console.log("error", err);
-    }
-    console.log("falgun:", result.affectedRows);
-    if (result.affectedRows == 0) {
-      res
-        .status(500)
-        .json({
+  connection.invokeQuery(
+    updateActiveSprint,
+    (result) => {
+      console.log("falgun:", result.affectedRows);
+      if (result.affectedRows == 0) {
+        res.status(500).json({
           msg: `No active sprint found in database with sprintID: ${req.body.sprintID}`,
         });
-    } else if (result.affectedRows == 1) {
-      res
-        .status(200)
-        .json({
+      } else if (result.affectedRows == 1) {
+        res.status(200).json({
           msg: `Active sprint with sprintID: ${req.body.sprintID} successfully modified!`,
         });
+      }
+    },
+    (err) => {
+      if (err) {
+        console.log("error10", err);
+      }
     }
-  });
+  );
 };
 
 module.exports.modifyActiveSprint = modifyActiveSprint;

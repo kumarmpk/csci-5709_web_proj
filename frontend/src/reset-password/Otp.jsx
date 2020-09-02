@@ -18,6 +18,8 @@ class Otp extends Component {
   updateValues = (e) => {
     this.setState({
       [e.target.name]: e.target.value,
+      emailError: "",
+      otpError: "",
     });
   };
 
@@ -28,9 +30,13 @@ class Otp extends Component {
       emailError: "",
     };
 
+    const validEmailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
     if (this.state.email.length === 0) {
+      isError = true;
       errors.emailError = "Email cannot be empty!";
-    } else if (this.state.email.indexOf("@") === -1) {
+    } else if (!validEmailRegex.test(this.state.email)) {
+      isError = true;
       errors.emailError = "Requires valid email";
     }
 
@@ -220,6 +226,7 @@ class Otp extends Component {
     e.preventDefault();
 
     var isErrorPresent = this.validateEmail();
+    console.log("isErrorPresent", isErrorPresent);
     if (!isErrorPresent) {
       this.createOtp();
     }
@@ -259,7 +266,7 @@ class Otp extends Component {
                             value={this.state.otp}
                             onChange={(e) => this.updateValues(e)}
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             placeholder="Enter OTP sent to your email"
                           ></input>
                           <p align="left" style={{ color: "red" }}>
@@ -271,7 +278,7 @@ class Otp extends Component {
                           <button
                             type="submit"
                             onClick={this.verifyOTP}
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                             style={{ background: "#2888d1" }}
                           >
                             Verify OTP
@@ -291,7 +298,7 @@ class Otp extends Component {
                             value={this.state.email}
                             onChange={(e) => this.updateValues(e)}
                             type="email"
-                            class="form-control"
+                            className="form-control"
                             placeholder="Enter email address"
                           ></input>
                           <p align="left" style={{ color: "red" }}>
@@ -303,7 +310,7 @@ class Otp extends Component {
                           <button
                             type="submit"
                             onClick={this.sendOtp}
-                            class="btn btn-primary"
+                            className="btn btn-primary"
                             style={{ background: "#2888d1" }}
                           >
                             Send OTP

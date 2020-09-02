@@ -1,15 +1,7 @@
 /* Author: Kethan Srinivas Dasari
    Banner Id:  B00842485
 */
-const mysql = require("mysql");
-const config = require("../../../config");
-
-let database = mysql.createConnection({
-  host: config.mySQLConfig.host,
-  user: config.mySQLConfig.user,
-  password: config.mySQLConfig.password,
-  port: config.mySQLConfig.port,
-});
+const connection = require("../../../MySQLCon");
 
 const ResetPasswordController = (userData, response) => {
   console.log(userData);
@@ -17,22 +9,27 @@ const ResetPasswordController = (userData, response) => {
   let email = userData.email;
   let password = userData.password;
 
-  let update_password_query = `UPDATE webproject.User SET password='${password}' WHERE email='${email}'`;
+  let update_password_query = `UPDATE User SET password='${password}' WHERE email='${email}'`;
 
-  database.query(update_password_query, function (error, result) {
-    if (error) {
-      response("33");
-      console.log("error", error);
-    }
-    result = JSON.parse(JSON.stringify(result));
+  connection.invokeQuery(
+    update_password_query,
+    (result) => {
+      result = JSON.parse(JSON.stringify(result));
 
-    if (result["affectedRows"] == 1) {
-      response("34");
-    } else {
-      response("33");
+      if (result["affectedRows"] == 1) {
+        response("34");
+      } else {
+        response("33");
+      }
+      console.log(result);
+    },
+    (error) => {
+      if (error) {
+        response("33");
+        console.log("error4", error);
+      }
     }
-    console.log(result);
-  });
+  );
 };
 
 module.exports.ResetPasswordController = ResetPasswordController;

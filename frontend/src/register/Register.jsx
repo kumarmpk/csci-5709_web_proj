@@ -5,6 +5,8 @@ import React, { Component } from "react";
 import "./Register.css";
 import axios from "axios";
 import CONST from "../constants";
+import { Modal, Button } from "react-bootstrap";
+import errMsg from "../errormessages";
 
 class Register extends Component {
   constructor(props) {
@@ -24,6 +26,9 @@ class Register extends Component {
     passwordError: "",
     confirmPassword: "",
     confirmPasswordError: "",
+    error: "",
+    loading: false,
+    modalFlag: false,
   };
 
   updateValues = (e) => {
@@ -83,6 +88,7 @@ class Register extends Component {
 
   //This method sends API call to backend and registers the user
   registerUser = async () => {
+    this.setState({ loading: true });
     var config = {
       headers: {
         "Content-Type": "application/json",
@@ -98,9 +104,19 @@ class Register extends Component {
 
     let url = CONST.URL + "register";
 
-    await axios.post(url, { data: userData }, config);
-
-    this.props.history.push("/login");
+    await axios
+      .post(url, { data: userData }, config)
+      .then((res) => {
+        this.setState({ loading: false, modalFlag: true });
+      })
+      .catch((err) => {
+        console.log(err.response);
+        if (err && err.response) {
+          this.setState({ error: err.response.data, loading: false });
+        } else {
+          this.setState({ error: errMsg["11"], loading: false });
+        }
+      });
   };
 
   btnClick = (e) => {
@@ -123,6 +139,14 @@ class Register extends Component {
     }
   };
 
+  handleModalClose = (e) => {
+    this.props.history.push("/login");
+  };
+
+  handleLoadingClose = (e) => {
+    this.setState({ loading: false });
+  };
+
   render() {
     return (
       <section>
@@ -135,6 +159,9 @@ class Register extends Component {
                     <h3 className="registerTitle">Sign up</h3>
                   </section>
                   <form className="form-container">
+                    <p align="left" style={{ color: "red" }}>
+                      {this.state.error}
+                    </p>
                     <section className="form-group">
                       <label>Name</label>
                       <input
@@ -222,6 +249,49 @@ class Register extends Component {
             </section>
           </section>
         </section>
+        <Modal
+          show={this.state.modalFlag}
+          onHide={this.handleModalClose}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Contact Us</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            The user is successfully registered into our application. Please
+            login to access the application.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
+              onClick={this.handleModalClose}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          show={this.state.loading}
+          onHide={this.handleLoadingClose}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Loading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            The details are being registered please wait....
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              className="btn btn-primary"
+              style={{ background: "#2888d1" }}
+              onClick={this.handleLoadingClose}
+            >
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </section>
     );
   }

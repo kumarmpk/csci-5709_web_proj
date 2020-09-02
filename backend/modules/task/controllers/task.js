@@ -2,17 +2,7 @@
 //  Banner Id:  B00837436
 //  Task Management feature controller
 
-const mysql = require("mysql");
-const config = require("../../../config");
-const e = require("express");
-
-let db = mysql.createPool({
-  host: config.mySQLConfig.host,
-  user: config.mySQLConfig.user,
-  password: config.mySQLConfig.password,
-  port: config.mySQLConfig.port,
-  database: config.mySQLConfig.database,
-});
+const connection = require("../../../MySQLCon");
 
 function isEmpty(input) {
   if (!input || input === "") {
@@ -77,23 +67,15 @@ const post_task = (task_obj, response) => {
   try {
     let insert_task_query = insertQuery(task_obj);
 
-    db.getConnection((err, connection) => {
-      if (err) {
+    connection.invokeQuery(
+      insert_task_query,
+      (insert_task_result) => {
+        response(insert_task_result.insertId);
+      },
+      (insert_task_err) => {
         response("19");
-      } else {
-        connection.query(
-          insert_task_query,
-          (insert_task_err, insert_task_result) => {
-            connection.release();
-            if (insert_task_err) {
-              response("19");
-            } else {
-              response(insert_task_result.insertId);
-            }
-          }
-        );
       }
-    });
+    );
   } catch (e) {
     response("19");
   }
@@ -105,49 +87,51 @@ const get_task = (taskid, response) => {
 
   let task_obj;
 
-  db.getConnection((err, connection) => {
-    if (err) {
-      response("19");
-    } else {
-      connection.query(task_query, (task_err, task_result) => {
-        if (task_err) {
-          response("19");
-        } else {
-          if (task_result && task_result.length) {
-            task_obj = task_result[0];
+  connection.invokeQuery(
+    task_query,
+    (task_result) => {
+      if (task_result && task_result.length) {
+        task_obj = task_result[0];
 
-            let comment_query = `select comm.comment, DATE_FORMAT(comm.createdDate, '%b %d, %Y %h:%i %p') as createdDate,
+        let comment_query = `select comm.comment, DATE_FORMAT(comm.createdDate, '%b %d, %Y %h:%i %p') as createdDate,
                               comm.userid userid, userName From Comments comm, User where taskid = '${task_obj.taskid}' 
                               and User.userID = comm.userid order by id desc;`;
 
-            connection.query(comment_query, (comment_err, comment_result) => {
-              if (comment_err) {
-                response("19");
-              } else {
-                let commentList = [];
+        connection.invokeQuery(
+          comment_query,
+          (comment_result) => {
+            let commentList = [];
 
-                if (comment_result && comment_result.length) {
-                  Object.values(comment_result).forEach((value) => {
-                    let comment = {};
-                    comment.date = value.createdDate;
-                    comment.comment = value.comment;
-                    comment.userid = value.userid;
-                    comment.userName = value.userName;
-                    commentList.push(comment);
-                  });
-                }
-                task_obj.commentList = commentList;
-                connection.release();
-                response(task_obj);
-              }
-            });
-          } else {
+            if (comment_result && comment_result.length) {
+              Object.values(comment_result).forEach((value) => {
+                let comment = {};
+                comment.date = value.createdDate;
+                comment.comment = value.comment;
+                comment.userid = value.userid;
+                comment.userName = value.userName;
+                commentList.push(comment);
+              });
+            }
+            task_obj.commentList = commentList;
+
             response(task_obj);
+          },
+          (comment_err) => {
+            if (comment_err) {
+              response("19");
+            }
           }
-        }
-      });
+        );
+      } else {
+        response(task_obj);
+      }
+    },
+    (task_err) => {
+      if (task_err) {
+        response("19");
+      }
     }
-  });
+  );
 };
 
 const get_user_proj_list = (obj, response) => {
@@ -164,35 +148,32 @@ const get_user_proj_list = (obj, response) => {
 
     proj_query = proj_query + " order by proj.projectID; ";
 
-    db.getConnection((err, connection) => {
-      if (err) {
-        response("19");
-      } else {
-        connection.query(proj_query, (proj_err, proj_result) => {
-          if (proj_err) {
-            response("19");
-          } else {
-            if (proj_result && proj_result.length) {
-              let proj_obj = [{ id: "", name: "Select a project" }];
-              Object.values(proj_result).forEach((value) => {
-                let project = {
-                  id: value["projectID"],
-                  name: value["projectName"],
-                };
-                proj_obj.push(project);
-              });
+    connection.invokeQuery(
+      proj_query,
+      (proj_result) => {
+        if (proj_result && proj_result.length) {
+          let proj_obj = [{ id: "", name: "Select a project" }];
+          Object.values(proj_result).forEach((value) => {
+            let project = {
+              id: value["projectID"],
+              name: value["projectName"],
+            };
+            proj_obj.push(project);
+          });
 
-              output["project"] = proj_obj;
-              connection.release();
-              response(output);
-            } else {
-              connection.release();
-              response(output);
-            }
-          }
-        });
+          output["project"] = proj_obj;
+
+          response(output);
+        } else {
+          response(output);
+        }
+      },
+      (proj_err) => {
+        if (proj_err) {
+          response("19");
+        }
       }
-    });
+    );
   } catch (e) {
     response("19");
   }
@@ -218,61 +199,61 @@ const get_proj_rel_dtls = (obj, response) => {
 
     user_query = user_query + ` )  order by User.userID;`;
 
-    db.getConnection((err, connection) => {
-      if (err) {
-        response("19");
-      } else {
-        connection.query(user_query, (user_err, user_result) => {
-          if (user_err) {
-            response("19");
-          } else {
-            if (user_result && user_result.length) {
-              let user_obj = [{ id: "", name: "Select a User" }];
+    connection.invokeQuery(
+      user_query,
+      (user_result) => {
+        if (user_result && user_result.length) {
+          let user_obj = [{ id: "", name: "Select a User" }];
 
-              Object.values(user_result).forEach((value) => {
-                let user = { id: value["userID"], name: value["userName"] };
-                user_obj.push(user);
-              });
+          Object.values(user_result).forEach((value) => {
+            let user = { id: value["userID"], name: value["userName"] };
+            user_obj.push(user);
+          });
 
-              output["user"] = user_obj;
+          output["user"] = user_obj;
 
-              let sprint_query = `select sp.sprintID, sp.sprintname from Sprints sp `;
+          let sprint_query = `select sp.sprintID, sp.sprintname from Sprints sp `;
 
-              if (obj && obj.role && obj.role !== "admin") {
-                sprint_query =
-                  sprint_query + ` where sp.projectID = '${obj.projectId}' `;
-              }
-
-              sprint_query = sprint_query + ` order by sp.sprintID; `;
-
-              connection.query(sprint_query, (sprint_err, sprint_result) => {
-                if (sprint_err) {
-                  response("19");
-                } else {
-                  if (sprint_result && sprint_result.length) {
-                    let sprint_obj = [{ id: "", name: "Select a Sprint" }];
-
-                    Object.values(sprint_result).forEach((value) => {
-                      let sprint = {
-                        id: value["sprintID"],
-                        name: value["sprintname"],
-                      };
-                      sprint_obj.push(sprint);
-                    });
-                    output["sprint"] = sprint_obj;
-                  }
-                }
-              });
-              connection.release();
-              response(output);
-            } else {
-              connection.release();
-              response(output);
-            }
+          if (obj && obj.role && obj.role !== "admin") {
+            sprint_query =
+              sprint_query + ` where sp.projectID = '${obj.projectId}' `;
           }
-        });
+
+          sprint_query = sprint_query + ` order by sp.sprintID; `;
+
+          connection.invokeQuery(
+            sprint_query,
+            (sprint_result) => {
+              if (sprint_result && sprint_result.length) {
+                let sprint_obj = [{ id: "", name: "Select a Sprint" }];
+
+                Object.values(sprint_result).forEach((value) => {
+                  let sprint = {
+                    id: value["sprintID"],
+                    name: value["sprintname"],
+                  };
+                  sprint_obj.push(sprint);
+                });
+                output["sprint"] = sprint_obj;
+              }
+              response(output);
+            },
+            (sprint_err) => {
+              if (sprint_err) {
+                response("19");
+              }
+            }
+          );
+        } else {
+          response(output);
+        }
+      },
+      (user_err) => {
+        if (user_err) {
+          response("19");
+        }
       }
-    });
+    );
   } catch (e) {
     response("19");
   }
@@ -281,29 +262,25 @@ const get_proj_rel_dtls = (obj, response) => {
 const delete_task = (taskid, response) => {
   let comment_query = `delete from Comments where taskid = (select taskid from Tasks where taskid = ${taskid});`;
 
-  db.getConnection((err, connection) => {
-    if (err) {
-      response("19");
-    } else {
-      connection.query(comment_query, (comment_err, comment_result) => {
-        if (comment_err) {
-          response("19");
-          return;
-        } else {
-          let task_query = `delete from Tasks where taskid = ${taskid};`;
+  connection.invokeQuery(
+    comment_query,
+    (comment_result) => {
+      let task_query = `delete from Tasks where taskid = ${taskid};`;
 
-          connection.query(task_query, (task_err, task_result) => {
-            if (task_err) {
-              response("19");
-            } else {
-              connection.release();
-              response("29");
-            }
-          });
+      connection.query(task_query, (task_err, task_result) => {
+        if (task_err) {
+          response("19");
+        } else {
+          response("29");
         }
       });
+    },
+    (comment_err) => {
+      if (comment_err) {
+        response("19");
+      }
     }
-  });
+  );
 };
 
 function dateFormatter(date) {
@@ -365,20 +342,17 @@ function insert_comment(task_obj, commentRes) {
       let comment_query = `insert into Comments (comment, taskid, createdDate, userid) values 
                         ('${task_obj.comment}', '${task_obj.taskid}', now(), '${task_obj.userId}');`;
 
-      db.getConnection((err, connection) => {
-        if (err) {
-          commentRes("err");
-        } else {
-          connection.query(comment_query, (comment_err, comment_result) => {
-            if (comment_err) {
-              commentRes("err");
-            } else {
-              connection.release();
-              commentRes("32");
-            }
-          });
+      connection.invokeQuery(
+        comment_query,
+        (comment_result) => {
+          commentRes("32");
+        },
+        (comment_err) => {
+          if (comment_err) {
+            commentRes("err");
+          }
         }
-      });
+      );
     } else {
       commentRes(undefined);
     }
@@ -395,20 +369,17 @@ const put_task = (task_obj, response) => {
 
     let update_task_query = updateQuery(task_obj);
 
-    db.getConnection((err, connection) => {
-      if (err) {
-        response("19");
-      } else {
-        connection.query(update_task_query, (update_err, update_result) => {
-          if (update_err) {
-            response("19");
-          } else {
-            connection.release();
-            response("30");
-          }
-        });
+    connection.invokeQuery(
+      update_task_query,
+      (update_result) => {
+        response("30");
+      },
+      (update_err) => {
+        if (update_err) {
+          response("19");
+        }
       }
-    });
+    );
   } catch (e) {
     response("19");
   }

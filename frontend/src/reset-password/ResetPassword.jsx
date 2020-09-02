@@ -141,7 +141,7 @@ class ResetPassword extends Component {
                           value={this.state.email}
                           onChange={(e) => this.updateValues(e)}
                           type="email"
-                          class="form-control"
+                          className="form-control"
                           disabled="disabled"
                         ></input>
                         <p align="left" style={{ color: "red" }}>
@@ -156,7 +156,7 @@ class ResetPassword extends Component {
                           value={this.state.password}
                           onChange={(e) => this.updateValues(e)}
                           type="password"
-                          class="form-control"
+                          className="form-control"
                           placeholder="Enter password"
                         ></input>
                         <p align="left" style={{ color: "red" }}>
@@ -170,7 +170,7 @@ class ResetPassword extends Component {
                           value={this.state.confirmPassword}
                           onChange={(e) => this.updateValues(e)}
                           type="password"
-                          class="form-control"
+                          className="form-control"
                           placeholder="Confirm password"
                         ></input>
                         <p align="left" style={{ color: "red" }}>
@@ -181,7 +181,7 @@ class ResetPassword extends Component {
                         <button
                           type="submit"
                           onClick={this.btnClick}
-                          class="btn btn-primary"
+                          className="btn btn-primary"
                           style={{ background: "#2888d1" }}
                         >
                           Reset Password

@@ -1,17 +1,9 @@
 /* Author: Kethan Srinivas Dasari
    Banner Id:  B00842485
 */
-const mysql = require("mysql");
 const config = require("../../../config");
 const nodemailer = require("nodemailer");
-const { contactUs } = require("../../../constants");
-
-let database = mysql.createConnection({
-  host: config.mySQLConfig.host,
-  user: config.mySQLConfig.user,
-  password: config.mySQLConfig.password,
-  port: config.mySQLConfig.port,
-});
+const connection = require("../../../MySQLCon");
 
 let transporter = nodemailer.createTransport({
   service: config.emailConfig.service,
@@ -23,7 +15,7 @@ let transporter = nodemailer.createTransport({
 
 transporter.verify((error, success) => {
   if (error) {
-    console.log("error", error);
+    console.log("error2", error);
   }
 });
 
@@ -40,7 +32,7 @@ const OtpController = (userData, response) => {
     otp += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
 
-  let insert_otp_query = `insert into webproject.Otp(email, otp) values('${email}', '${otp}')`;
+  let insert_otp_query = `insert into Otp(email, otp) values('${email}', '${otp}')`;
 
   console.log(insert_otp_query);
 
@@ -49,28 +41,32 @@ const OtpController = (userData, response) => {
   email_obj["email"] = email;
   email_obj["otp"] = otp;
 
-  database.query(insert_otp_query, email_obj, function (error, result) {
-    console.log("email is:", email_obj["email"]);
-    if (error) {
-      response("39");
-      console.log("error", error);
+  connection.invokeQuery(
+    insert_otp_query,
+    (result) => {
+      result = JSON.parse(JSON.stringify(result));
+
+      if (result["affectedRows"] == 1) {
+        // send mail with defined transport object
+        content = "Your OTP is: " + otp;
+        sendMail(email, content);
+
+        console.log("sent mail called");
+
+        response("38");
+        inserted = true;
+      } else {
+        response("39");
+      }
+      console.log(result);
+    },
+    (error) => {
+      if (error) {
+        response("39");
+        console.log("error3", error);
+      }
     }
-    result = JSON.parse(JSON.stringify(result));
-
-    if (result["affectedRows"] == 1) {
-      // send mail with defined transport object
-      content = "Your OTP is: " + otp;
-      sendMail(email, content);
-
-      console.log("sent mail called");
-
-      response("38");
-      inserted = true;
-    } else {
-      response("39");
-    }
-    console.log(result);
-  });
+  );
 
   console.log(inserted);
 };

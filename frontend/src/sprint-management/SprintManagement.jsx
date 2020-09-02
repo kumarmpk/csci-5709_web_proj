@@ -216,7 +216,6 @@ class SprintManagement extends Component {
           });
       })
       .catch((error) => {
-        //console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -303,7 +302,6 @@ class SprintManagement extends Component {
           });
       })
       .catch((error) => {
-        //console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -394,7 +392,6 @@ class SprintManagement extends Component {
           });
       })
       .catch((error) => {
-        //console.log("error1", error.response.data.msg);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -469,7 +466,6 @@ class SprintManagement extends Component {
           });
       })
       .catch((error) => {
-        // //console.log("error1", error);
         this.setState({
           errorMsg: error.response.data.msg,
         });
@@ -546,7 +542,6 @@ class SprintManagement extends Component {
           });
       })
       .catch((error) => {
-        //console.log("error1", error);
         this.setState({
           errorMsg: error.response.data.msg,
         });

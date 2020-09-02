@@ -3,17 +3,9 @@
 //  Contact Us feature controller
 
 const nodemailer = require("nodemailer");
-const mysql = require("mysql");
 const config = require("../../../config");
 const { contactUs } = require("../../../constants");
-
-let db = mysql.createPool({
-  host: config.mySQLConfig.host,
-  user: config.mySQLConfig.user,
-  password: config.mySQLConfig.password,
-  port: config.mySQLConfig.port,
-  database: config.mySQLConfig.database,
-});
+const connection = require("../../../MySQLCon");
 
 let transporter = nodemailer.createTransport({
   service: config.emailConfig.service,
@@ -25,7 +17,7 @@ let transporter = nodemailer.createTransport({
 
 transporter.verify((error, success) => {
   if (error) {
-    console.log("error", error);
+    console.log("error1", error);
   }
 });
 
@@ -112,20 +104,15 @@ const post_contact_us = (contact_us_obj, response) => {
 };
 
 function dbExecute(query, response) {
-  db.getConnection((err, connection) => {
-    if (err) {
-      response("19");
-    } else {
-      connection.query(query, (err, result) => {
-        if (err) {
-          response("19");
-        } else {
-          connection.release();
-          response("18");
-        }
-      });
+  connection.invokeQuery(
+    query,
+    (result) => {
+      if (result) response("18");
+    },
+    (err) => {
+      if (err) response("19");
     }
-  });
+  );
 }
 
 module.exports.post_contact_us = post_contact_us;
